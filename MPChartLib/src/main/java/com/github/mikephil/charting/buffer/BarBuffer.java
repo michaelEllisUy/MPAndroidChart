@@ -67,10 +67,7 @@ public class BarBuffer extends AbstractBuffer<IBarDataSet> {
                     top = vals[1];
 
                     // multiply the height of the rect with the phase
-                    if (top > 0)
-                        top *= phaseY;
-                    else
-                        bottom *= phaseY;
+                    top = bottom + (top - bottom) * phaseY;
 
                     addBar(left, top, right, bottom);
                 }
@@ -85,8 +82,7 @@ public class BarBuffer extends AbstractBuffer<IBarDataSet> {
                         top = vals[k * 2 + 1];
 
                         // multiply the height of the rect with the phase
-                        top *= phaseY;
-                        bottom *= phaseY;
+                        top = bottom + (top - bottom) * phaseY;
 
                         addBar(left, top, right, bottom);
                     }
