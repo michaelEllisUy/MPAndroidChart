@@ -15,18 +15,23 @@ import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.highlight.Range;
 import com.github.mikephil.charting.interfaces.dataprovider.BarDataProvider;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.MPPointF;
 import com.github.mikephil.charting.utils.Transformer;
 import com.github.mikephil.charting.utils.Utils;
 import com.github.mikephil.charting.utils.ViewPortHandler;
+
 import android.graphics.LinearGradient;
+
 import com.github.mikephil.charting.model.GradientColor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
 
     protected BarDataProvider mChart;
+    private int colorWah;
 
     /**
      * the rect object that is used for drawing the bars
@@ -108,9 +113,9 @@ public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
             final float barWidthHalf = barWidth / 2.0f;
             float x;
 
-            for (int i = 0, count = Math.min((int)(Math.ceil((float)(dataSet.getEntryCount()) * phaseX)), dataSet.getEntryCount());
-                i < count;
-                i++) {
+            for (int i = 0, count = Math.min((int) (Math.ceil((float) (dataSet.getEntryCount()) * phaseX)), dataSet.getEntryCount());
+                 i < count;
+                 i++) {
 
                 BarEntry e = dataSet.getEntryForIndex(i);
 
@@ -167,36 +172,40 @@ public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
 
             if (dataSet.getGradientColor() != null) {
                 GradientColor gradientColor = dataSet.getGradientColor();
-                 mRenderPaint.setShader(
-                    new LinearGradient(
-                        buffer.buffer[j],
-                        buffer.buffer[j + 3],
-                        buffer.buffer[j],
-                        buffer.buffer[j + 1],
-                        gradientColor.getStartColor(),
-                        gradientColor.getEndColor(),
-                        android.graphics.Shader.TileMode.MIRROR));
+                mRenderPaint.setShader(
+                        new LinearGradient(
+                                buffer.buffer[j],
+                                buffer.buffer[j + 3],
+                                buffer.buffer[j],
+                                buffer.buffer[j + 1],
+                                gradientColor.getStartColor(),
+                                gradientColor.getEndColor(),
+                                android.graphics.Shader.TileMode.MIRROR));
             }
 
             if (dataSet.getGradientColors() != null) {
-                 mRenderPaint.setShader(
-                    new LinearGradient(
-                        buffer.buffer[j],
-                        buffer.buffer[j + 3],
-                        buffer.buffer[j],
-                        buffer.buffer[j + 1],
-                        dataSet.getGradientColor(j / 4).getStartColor(),
-                        dataSet.getGradientColor(j / 4).getEndColor(),
-                        android.graphics.Shader.TileMode.MIRROR));
+                mRenderPaint.setShader(
+                        new LinearGradient(
+                                buffer.buffer[j],
+                                buffer.buffer[j + 3],
+                                buffer.buffer[j],
+                                buffer.buffer[j + 1],
+                                dataSet.getGradientColor(j / 4).getStartColor(),
+                                dataSet.getGradientColor(j / 4).getEndColor(),
+                                android.graphics.Shader.TileMode.MIRROR));
             }
 
+            if (mRenderPaint.getColor() != ColorTemplate.rgb("#FFFFFFFF")) {
+                if (mRenderPaint.getColor() == -334592) {
+                    colorWah++;
+                }
+                c.drawRoundRect(buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2],
+                        buffer.buffer[j + 3], 25, 25, mRenderPaint);
 
-            c.drawRect(buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2],
-                    buffer.buffer[j + 3], mRenderPaint);
-
-            if (drawBorder) {
-                c.drawRect(buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2],
-                        buffer.buffer[j + 3], mBarBorderPaint);
+                if (drawBorder) {
+                    c.drawRoundRect(buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2],
+                            buffer.buffer[j + 3], 25, 25, mBarBorderPaint);
+                }
             }
         }
     }
@@ -222,8 +231,8 @@ public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
             List<IBarDataSet> dataSets = mChart.getBarData().getDataSets();
 
             final float valueOffsetPlus = Utils.convertDpToPixel(4.5f);
-            float posOffset = 0f;
-            float negOffset = 0f;
+            float posOffset;
+            float negOffset;
             boolean drawValueAboveBar = mChart.isDrawValueAboveBarEnabled();
 
             for (int i = 0; i < mChart.getBarData().getDataSetCount(); i++) {
@@ -299,8 +308,8 @@ public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
                             Utils.drawImage(
                                     c,
                                     icon,
-                                    (int)px,
-                                    (int)py,
+                                    (int) px,
+                                    (int) py,
                                     icon.getIntrinsicWidth(),
                                     icon.getIntrinsicHeight());
                         }
@@ -355,8 +364,8 @@ public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
                                 Utils.drawImage(
                                         c,
                                         icon,
-                                        (int)px,
-                                        (int)py,
+                                        (int) px,
+                                        (int) py,
                                         icon.getIntrinsicWidth(),
                                         icon.getIntrinsicHeight());
                             }
@@ -366,66 +375,17 @@ public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
 
                             float[] transformed = new float[vals.length * 2];
 
-                            float posY = 0f;
-                            float negY = -entry.getNegativeSum();
-
                             for (int k = 0, idx = 0; k < transformed.length; k += 2, idx++) {
+                                float y = vals[idx];
 
-                                float value = vals[idx];
-                                float y;
-
-                                if (value == 0.0f && (posY == 0.0f || negY == 0.0f)) {
-                                    // Take care of the situation of a 0.0 value, which overlaps a non-zero bar
-                                    y = value;
-                                } else if (value >= 0.0f) {
-                                    posY += value;
-                                    y = posY;
-                                } else {
-                                    y = negY;
-                                    negY -= value;
-                                }
-
+                                transformed[k] = y;
                                 transformed[k + 1] = y * phaseY;
                             }
 
                             trans.pointValuesToPixel(transformed);
-
-                            for (int k = 0; k < transformed.length; k += 2) {
-
-                                final float val = vals[k / 2];
-                                final boolean drawBelow =
-                                        (val == 0.0f && negY == 0.0f && posY > 0.0f) ||
-                                                val < 0.0f;
-                                float y = transformed[k + 1]
-                                        + (drawBelow ? negOffset : posOffset);
-
-                                if (!mViewPortHandler.isInBoundsRight(x))
-                                    break;
-
-                                if (!mViewPortHandler.isInBoundsY(y)
-                                        || !mViewPortHandler.isInBoundsLeft(x))
-                                    continue;
-
-                                if (dataSet.isDrawValuesEnabled()) {
-                                    drawValue(c, formatter.getBarStackedLabel(val, entry), x, y, color);
-                                }
-
-                                if (entry.getIcon() != null && dataSet.isDrawIconsEnabled()) {
-
-                                    Drawable icon = entry.getIcon();
-
-                                    Utils.drawImage(
-                                            c,
-                                            icon,
-                                            (int)(x + iconsOffset.x),
-                                            (int)(y + iconsOffset.y),
-                                            icon.getIntrinsicWidth(),
-                                            icon.getIntrinsicHeight());
-                                }
-                            }
                         }
 
-                        bufferIndex = vals == null ? bufferIndex + 4 : bufferIndex + 4 * vals.length;
+                        bufferIndex = vals == null ? bufferIndex + 4 : bufferIndex + 4 * vals.length / 2;
                         index++;
                     }
                 }
@@ -463,14 +423,14 @@ public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
             mHighlightPaint.setColor(set.getHighLightColor());
             mHighlightPaint.setAlpha(set.getHighLightAlpha());
 
-            boolean isStack = (high.getStackIndex() >= 0  && e.isStacked()) ? true : false;
+            boolean isStack = (high.getStackIndex() >= 0 && e.isStacked()) ? true : false;
 
             final float y1;
             final float y2;
 
             if (isStack) {
 
-                if(mChart.isHighlightFullBarEnabled()) {
+                if (mChart.isHighlightFullBarEnabled()) {
 
                     y1 = e.getPositiveSum();
                     y2 = -e.getNegativeSum();
@@ -498,6 +458,7 @@ public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
 
     /**
      * Sets the drawing position of the highlight object based on the riven bar-rect.
+     *
      * @param high
      */
     protected void setHighlightDrawPos(Highlight high, RectF bar) {

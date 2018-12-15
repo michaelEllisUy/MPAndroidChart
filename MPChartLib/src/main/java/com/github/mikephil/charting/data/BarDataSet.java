@@ -51,6 +51,46 @@ public class BarDataSet extends BarLineScatterCandleBubbleDataSet<BarEntry> impl
         calcEntryCountIncludingStacks(yVals);
     }
 
+    public BarDataSet(List<BarEntry> yVals, String label, boolean isAtlasDataSet) {
+        super(yVals, label);
+
+        mHighLightColor = Color.rgb(0, 0, 0);
+
+        calcStackSizeForAtlas(yVals);
+        calcEntryCountIncludingStacksForAtlas(yVals);
+    }
+
+    /**
+     * Calculates the total number of entries this DataSet represents, including
+     * stacks. All values belonging to a stack are calculated separately.
+     */
+    private void calcEntryCountIncludingStacksForAtlas(List<BarEntry> yVals) {
+
+        mEntryCountStacks = 0;
+
+        for (int i = 0; i < yVals.size(); i++) {
+
+            int ranges = yVals.get(i).getRanges().length;
+
+            if (ranges == 0)
+                mEntryCountStacks++;
+            else
+                mEntryCountStacks += ranges;
+        }
+    }
+
+    /**
+     * calculates the maximum stacksize that occurs in the Entries array of this
+     * DataSet
+     */
+    private void calcStackSizeForAtlas(List<BarEntry> yVals) {
+        for (int i = 0; i < yVals.size(); i++) {
+            int stackSize = yVals.get(i).getRanges().length;
+            if (stackSize > mStackSize)
+                mStackSize = stackSize;
+        }
+    }
+
     @Override
     public DataSet<BarEntry> copy() {
         List<BarEntry> entries = new ArrayList<BarEntry>();
@@ -127,6 +167,7 @@ public class BarDataSet extends BarLineScatterCandleBubbleDataSet<BarEntry> impl
             }
 
             calcMinMaxX(e);
+            calcMinMaxY(e);
         }
     }
 

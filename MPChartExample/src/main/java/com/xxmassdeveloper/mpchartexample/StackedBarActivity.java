@@ -6,7 +6,9 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+
 import androidx.core.content.ContextCompat;
+
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -112,16 +114,18 @@ public class StackedBarActivity extends DemoBase implements OnSeekBarChangeListe
 
         ArrayList<BarEntry> values = new ArrayList<>();
 
-        for (int i = 0; i < seekBarX.getProgress(); i++) {
+        for (int i = 0; i < 24; i++) {
             float mul = (seekBarY.getProgress() + 1);
-            float val1 = (float) (Math.random() * mul) + mul / 3;
-            float val2 = (float) (Math.random() * mul) + mul / 3;
-            float val3 = (float) (Math.random() * mul) + mul / 3;
+            float val1 = 1;
+            float val2 = 3;
+            float val3 = 2;
+            float val4 = 4;
 
             values.add(new BarEntry(
                     i,
-                    new float[]{val1, val2, val3},
-                    getResources().getDrawable(R.drawable.star)));
+                    new float[]{val1, val2, val3, val4},
+                    getResources().getDrawable(R.drawable.star),
+                    false, true));
         }
 
         BarDataSet set1;
@@ -133,10 +137,10 @@ public class StackedBarActivity extends DemoBase implements OnSeekBarChangeListe
             chart.getData().notifyDataChanged();
             chart.notifyDataSetChanged();
         } else {
-            set1 = new BarDataSet(values, "Statistics Vienna 2014");
+            set1 = new BarDataSet(values, "Statistics Vienna 2014", true);
             set1.setDrawIcons(false);
             set1.setColors(getColors());
-            set1.setStackLabels(new String[]{"Births", "Divorces", "Marriages"});
+            set1.setStackLabels(new String[]{"Births", "Marks"});
 
             ArrayList<IBarDataSet> dataSets = new ArrayList<>();
             dataSets.add(set1);
@@ -253,32 +257,38 @@ public class StackedBarActivity extends DemoBase implements OnSeekBarChangeListe
     }
 
     @Override
-    public void onStartTrackingTouch(SeekBar seekBar) {}
+    public void onStartTrackingTouch(SeekBar seekBar) {
+    }
 
     @Override
-    public void onStopTrackingTouch(SeekBar seekBar) {}
+    public void onStopTrackingTouch(SeekBar seekBar) {
+    }
 
     @Override
     public void onValueSelected(Entry e, Highlight h) {
 
         BarEntry entry = (BarEntry) e;
 
-        if (entry.getYVals() != null)
+        if (entry.getYVals() != null && h.getStackIndex() != -1)
             Log.i("VAL SELECTED", "Value: " + entry.getYVals()[h.getStackIndex()]);
         else
             Log.i("VAL SELECTED", "Value: " + entry.getY());
     }
 
     @Override
-    public void onNothingSelected() {}
+    public void onNothingSelected() {
+    }
 
     private int[] getColors() {
 
         // have as many colors as stack-values per entry
-        int[] colors = new int[3];
+        int[] colors = new int[4];
 
-        System.arraycopy(ColorTemplate.MATERIAL_COLORS, 0, colors, 0, 3);
+        System.arraycopy(ColorTemplate.MATERIAL_COLORS, 0, colors, 0, 2);
 
-        return colors;
+        return new int[]{
+                ColorTemplate.rgb("#257426"),
+                ColorTemplate.rgb("#000000"),
+        };
     }
 }

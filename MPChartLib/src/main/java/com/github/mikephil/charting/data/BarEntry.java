@@ -137,6 +137,23 @@ public class BarEntry extends Entry {
         calcRanges();
     }
 
+    public BarEntry(float x, float[] vals, Drawable icon, Object data, Boolean isAtlasEntry) {
+        super(x, findMaxVal(vals), icon, data);
+        this.mYVals = vals;
+        calcAtlasRanges();
+        int i = 1;
+    }
+
+    private static float findMaxVal(float[] vals) {
+        float maxVal = 0;
+        for (float val : vals) {
+            if (maxVal < val) {
+                maxVal = val;
+            }
+        }
+        return maxVal;
+    }
+
     /**
      * Returns an exact copy of the BarEntry.
      */
@@ -278,6 +295,19 @@ public class BarEntry extends Entry {
             sum += f;
 
         return sum;
+    }
+
+    protected void calcAtlasRanges() {
+        float[] values = getYVals();
+
+        if (values == null || values.length == 0)
+            return;
+
+        mRanges = new Range[values.length / 2];
+
+        for (int i = 0; i < mRanges.length; i++) {
+            mRanges[i] = new Range(values[i * 2], values[i * 2 + 1]);
+        }
     }
 
     protected void calcRanges() {

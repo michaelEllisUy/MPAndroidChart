@@ -137,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
 
         switch (pos) {
             case 1:
-                i = new Intent(this, LineChartActivity1.class);
+                i = new Intent(this, StackedBarActivity.class);
                 break;
             case 2:
                 i = new Intent(this, MultiLineChartActivity.class);
