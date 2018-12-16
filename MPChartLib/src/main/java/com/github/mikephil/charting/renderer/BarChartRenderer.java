@@ -3,6 +3,7 @@ package com.github.mikephil.charting.renderer;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 
@@ -16,6 +17,7 @@ import com.github.mikephil.charting.highlight.Range;
 import com.github.mikephil.charting.interfaces.dataprovider.BarDataProvider;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.github.mikephil.charting.utils.MPPointD;
 import com.github.mikephil.charting.utils.MPPointF;
 import com.github.mikephil.charting.utils.Transformer;
 import com.github.mikephil.charting.utils.Utils;
@@ -31,7 +33,7 @@ import java.util.List;
 public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
 
     protected BarDataProvider mChart;
-    private int colorWah;
+    private int barRadius = 25;
 
     /**
      * the rect object that is used for drawing the bars
@@ -196,11 +198,11 @@ public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
             }
 
             c.drawRoundRect(buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2],
-                    buffer.buffer[j + 3], 25, 25, mRenderPaint);
+                    buffer.buffer[j + 3], barRadius, barRadius, mRenderPaint);
 
             if (drawBorder) {
                 c.drawRoundRect(buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2],
-                        buffer.buffer[j + 3], 25, 25, mBarBorderPaint);
+                        buffer.buffer[j + 3], barRadius, barRadius, mBarBorderPaint);
             }
         }
     }
@@ -447,7 +449,16 @@ public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
 
             setHighlightDrawPos(high, mBarRect);
 
-            c.drawRect(mBarRect, mHighlightPaint);
+            // create vertical path
+            Paint pa = new Paint();
+            pa.setColor(Color.RED);
+            pa.setStrokeWidth(5);
+            MPPointD pix = trans.getPixelForValues(e.getX(), 0);
+            c.drawRect((float) pix.x - 1, mViewPortHandler.contentTop(), (float) pix.x+1,
+                    mViewPortHandler.contentBottom(), mHighlightPaint);
+
+
+            c.drawRoundRect(mBarRect, barRadius, barRadius, mHighlightPaint);
         }
     }
 

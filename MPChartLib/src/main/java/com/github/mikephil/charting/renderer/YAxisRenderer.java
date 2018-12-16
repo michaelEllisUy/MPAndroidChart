@@ -234,7 +234,7 @@ public class YAxisRenderer extends AxisRenderer {
         Path zeroLinePath = mDrawZeroLinePath;
         zeroLinePath.reset();
 
-        zeroLinePath.moveTo(mViewPortHandler.contentLeft(), (float) pos.y);
+        zeroLinePath.moveTo(mViewPortHandler.contentRight(), (float) 0);
         zeroLinePath.lineTo(mViewPortHandler.contentRight(), (float) pos.y);
 
         // draw a path because lines don't support dashing on lower android versions

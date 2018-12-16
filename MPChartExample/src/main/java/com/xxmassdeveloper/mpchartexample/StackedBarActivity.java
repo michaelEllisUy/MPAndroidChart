@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.DashPathEffect;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -68,7 +69,6 @@ public class StackedBarActivity extends DemoBase implements OnSeekBarChangeListe
         // if more than 60 entries are displayed in the chart, no values will be
         // drawn
         chart.setMaxVisibleValueCount(40);
-
         // scaling can now only be done on x- and y-axis separately
         chart.setPinchZoom(false);
 
@@ -79,17 +79,21 @@ public class StackedBarActivity extends DemoBase implements OnSeekBarChangeListe
         chart.setHighlightFullBarEnabled(false);
 
         // change the position of the y-labels
-        YAxis leftAxis = chart.getAxisLeft();
-        leftAxis.setValueFormatter(new MyValueFormatter("K"));
-        leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
-        chart.getAxisRight().setEnabled(false);
+        YAxis rightAxis = chart.getAxisRight();
+        //TODO: Replace this with the correct minimum! :)
+        rightAxis.setAxisMinimum(25f); // this replaces setStartAtZero(true)
+        rightAxis.setDrawZeroLine(true); // this replaces setStartAtZero(true)
+        chart.getAxisLeft().setEnabled(false);
 
         XAxis xLabels = chart.getXAxis();
-        xLabels.setPosition(XAxisPosition.TOP);
-
+        xLabels.setGranularity(1);
+        xLabels.setGranularityEnabled(true);
+        xLabels.setOneGridLinePerUnit(true);
+        xLabels.enableGridDashedLine(10, 10, 0);
+        xLabels.setLabelCount(8);
+        xLabels.setPosition(XAxisPosition.BOTTOM);
         // chart.setDrawXLabels(false);
         // chart.setDrawYLabels(false);
-
         // setting data
         seekBarX.setProgress(12);
         seekBarY.setProgress(100);
@@ -116,10 +120,10 @@ public class StackedBarActivity extends DemoBase implements OnSeekBarChangeListe
 
         for (int i = 0; i < 24; i++) {
             float mul = (seekBarY.getProgress() + 1);
-            float val1 = 1;
-            float val2 = 3;
-            float val3 = 2;
-            float val4 = 4;
+            float val1 = 25;
+            float val2 = 50;
+            float val3 = 75;
+            float val4 = 125;
 
             values.add(new BarEntry(
                     i,
@@ -146,7 +150,7 @@ public class StackedBarActivity extends DemoBase implements OnSeekBarChangeListe
             dataSets.add(set1);
 
             BarData data = new BarData(dataSets);
-            data.setValueFormatter(new StackedValueFormatter(false, "", 1));
+            data.setValueFormatter(new StackedValueFormatter(false, "", 0));
             data.setValueTextColor(Color.WHITE);
 
             chart.setData(data);
@@ -287,8 +291,8 @@ public class StackedBarActivity extends DemoBase implements OnSeekBarChangeListe
         System.arraycopy(ColorTemplate.MATERIAL_COLORS, 0, colors, 0, 2);
 
         return new int[]{
-                ColorTemplate.rgb("#257426"),
-                ColorTemplate.rgb("#000000"),
+                ColorTemplate.rgb("#F15B59"),
+                ColorTemplate.rgb("#FAE500"),
         };
     }
 }

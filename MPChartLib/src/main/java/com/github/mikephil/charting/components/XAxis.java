@@ -53,6 +53,11 @@ public class XAxis extends AxisBase {
     private XAxisPosition mPosition = XAxisPosition.TOP;
 
     /**
+     * Will draw one grid line per unit
+     */
+    private boolean oneGridLinePerUnit;
+
+    /**
      * enum for the position of the x-labels relative to the chart
      */
     public enum XAxisPosition {
@@ -114,5 +119,13 @@ public class XAxis extends AxisBase {
      */
     public boolean isAvoidFirstLastClippingEnabled() {
         return mAvoidFirstLastClipping;
+    }
+
+    public void setOneGridLinePerUnit(boolean oneGridLinePerUnit) {
+        this.oneGridLinePerUnit = oneGridLinePerUnit;
+    }
+
+    public boolean shouldDrawOneGridLinePerUnit() {
+        return oneGridLinePerUnit;
     }
 }

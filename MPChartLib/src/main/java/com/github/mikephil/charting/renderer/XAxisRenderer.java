@@ -112,7 +112,7 @@ public class XAxisRenderer extends AxisRenderer {
         mAxisLabelPaint.setTextSize(mXAxis.getTextSize());
         mAxisLabelPaint.setColor(mXAxis.getTextColor());
 
-        MPPointF pointF = MPPointF.getInstance(0,0);
+        MPPointF pointF = MPPointF.getInstance(0, 0);
         if (mXAxis.getPosition() == XAxisPosition.TOP) {
             pointF.x = 0.5f;
             pointF.y = 1.0f;
@@ -229,8 +229,10 @@ public class XAxisRenderer extends AxisRenderer {
     protected void drawLabel(Canvas c, String formattedLabel, float x, float y, MPPointF anchor, float angleDegrees) {
         Utils.drawXAxisValue(c, formattedLabel, x, y, mAxisLabelPaint, anchor, angleDegrees);
     }
+
     protected Path mRenderGridLinesPath = new Path();
     protected float[] mRenderGridLinesBuffer = new float[2];
+
     @Override
     public void renderGridLines(Canvas c) {
 
@@ -240,14 +242,24 @@ public class XAxisRenderer extends AxisRenderer {
         int clipRestoreCount = c.save();
         c.clipRect(getGridClippingRect());
 
-        if(mRenderGridLinesBuffer.length != mAxis.mEntryCount * 2){
+        if (mRenderGridLinesBuffer.length != mAxis.mEntryCount * 2) {
             mRenderGridLinesBuffer = new float[mXAxis.mEntryCount * 2];
         }
         float[] positions = mRenderGridLinesBuffer;
 
-        for (int i = 0; i < positions.length; i += 2) {
-            positions[i] = mXAxis.mEntries[i / 2];
-            positions[i + 1] = mXAxis.mEntries[i / 2];
+        if (mXAxis.shouldDrawOneGridLinePerUnit()) {
+            positions = new float[((int) mXAxis.mAxisMaximum - (int) mXAxis.mAxisMinimum + 2) * 2];
+            int min = (int) mXAxis.mAxisMinimum;
+            for (int i = min, index = 0; index < positions.length; i++, index += 2) {
+                float linePosition = (float) i - 0.5f;
+                positions[index] = linePosition;
+                positions[index + 1] = linePosition;
+            }
+        } else {
+            for (int i = 0; i < positions.length; i += 2) {
+                positions[i] = mXAxis.mEntries[i / 2];
+                positions[i + 1] = mXAxis.mEntries[i / 2];
+            }
         }
 
         mTrans.pointValuesToPixel(positions);
