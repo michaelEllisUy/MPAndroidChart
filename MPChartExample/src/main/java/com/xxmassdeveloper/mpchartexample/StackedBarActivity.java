@@ -89,7 +89,7 @@ public class StackedBarActivity extends DemoBase implements OnSeekBarChangeListe
         xLabels.setGranularity(1);
         xLabels.setGranularityEnabled(true);
         xLabels.setOneGridLinePerUnit(true);
-        xLabels.enableGridDashedLine(10, 10, 0);
+        xLabels.enableGridDashedLine(20, 10, 0);
         xLabels.setLabelCount(8);
         xLabels.setPosition(XAxisPosition.BOTTOM);
         // chart.setDrawXLabels(false);
