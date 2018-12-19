@@ -81,7 +81,6 @@ public class StackedBarActivity extends DemoBase implements OnSeekBarChangeListe
         // change the position of the y-labels
         YAxis rightAxis = chart.getAxisRight();
         //TODO: Replace this with the correct minimum! :)
-        rightAxis.setAxisMinimum(25f); // this replaces setStartAtZero(true)
         rightAxis.setDrawZeroLine(true); // this replaces setStartAtZero(true)
         chart.getAxisLeft().setEnabled(false);
 
@@ -119,7 +118,6 @@ public class StackedBarActivity extends DemoBase implements OnSeekBarChangeListe
         ArrayList<BarEntry> values = new ArrayList<>();
 
         for (int i = 0; i < 24; i++) {
-            float mul = (seekBarY.getProgress() + 1);
             float val1 = 25;
             float val2 = 50;
             float val3 = 75;
@@ -127,7 +125,7 @@ public class StackedBarActivity extends DemoBase implements OnSeekBarChangeListe
 
             values.add(new BarEntry(
                     i,
-                    new float[]{val1, val2, val3, val4},
+                    new float[]{val1, val2},
                     getResources().getDrawable(R.drawable.star),
                     false, true));
         }
