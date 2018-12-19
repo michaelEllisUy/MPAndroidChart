@@ -384,6 +384,7 @@ public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
             mRenderPaint.setColor(set.getColor(stackIndex));
 
             drawVerticalselectorHighlight(c, e, trans);
+
 // Un-comment to draw shadow
 //            c.drawRoundRect(mBarRect, barRadius, barRadius, mHighlightPaint);
         }
@@ -392,7 +393,7 @@ public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
     private void drawVerticalselectorHighlight(Canvas c, BarEntry e, Transformer trans) {
         // create vertical path
         MPPointD pix = trans.getPixelForValues(e.getX(), 0);
-        if (!(mBarRect.top == 0 && mBarRect.bottom == 0)) {
+        if (!(mBarRect.top - mBarRect.bottom == 0)) {
             c.drawRect((float) pix.x - 2, mViewPortHandler.contentTop(), (float) pix.x + 2,
                     mBarRect.top - 4, mRenderPaint);
 

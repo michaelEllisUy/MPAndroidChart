@@ -122,8 +122,8 @@ public class StackedBarActivity extends DemoBase implements OnSeekBarChangeListe
         for (int i = 0; i < 24; i++) {
             float val1 = 25;
             float val2 = 50;
-            float val3 = 75;
-            float val4 = 125;
+            float val3 = 0;
+            float val4 = 0;
 
             values.add(new BarEntry(
                     i,
