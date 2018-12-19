@@ -18,6 +18,7 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
+import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
@@ -106,6 +107,7 @@ public class StackedBarActivity extends DemoBase implements OnSeekBarChangeListe
         l.setFormToTextSpace(4f);
         l.setXEntrySpace(6f);
 
+        chart.animateY(1500, Easing.EaseInOutCubic);
         // chart.setDrawLegend(false);
     }
 
