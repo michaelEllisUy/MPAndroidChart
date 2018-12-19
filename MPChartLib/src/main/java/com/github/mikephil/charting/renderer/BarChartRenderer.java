@@ -372,18 +372,12 @@ public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
             final float y1;
             final float y2;
 
-            if (mChart.isHighlightFullBarEnabled()) {
 
-                y1 = e.getPositiveSum();
-                y2 = -e.getNegativeSum();
+            int stackIndex = high.getStackIndex() == -1 ? 0 : high.getStackIndex();
+            Range range = e.getRanges()[stackIndex];
 
-            } else {
-
-                Range range = e.getRanges()[high.getStackIndex() == -1 ? 0 : high.getStackIndex()];
-
-                y1 = range.from;
-                y2 = range.to;
-            }
+            y1 = range.from;
+            y2 = range.to;
 
             prepareBarHighlight(e.getX(), y1, y2, barData.getBarWidth() / 2f, trans);
 
@@ -392,9 +386,11 @@ public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
             mBarRect.left += 4;
             mBarRect.right -= 4;
 
-            drawVerticalselectorHighlight(c, e, trans);
+            mRenderPaint.setColor(set.getColor(stackIndex));
 
-            c.drawRoundRect(mBarRect, barRadius, barRadius, mHighlightPaint);
+            drawVerticalselectorHighlight(c, e, trans);
+// Un-comment to draw shadow
+//            c.drawRoundRect(mBarRect, barRadius, barRadius, mHighlightPaint);
         }
     }
 
@@ -402,11 +398,11 @@ public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
         // create vertical path
         MPPointD pix = trans.getPixelForValues(e.getX(), 0);
 
-        c.drawRect((float) pix.x - 1, mViewPortHandler.contentTop(), (float) pix.x + 1,
-                mBarRect.top, mHighlightPaint);
+        c.drawRect((float) pix.x - 2, mViewPortHandler.contentTop(), (float) pix.x + 2,
+                mBarRect.top - 4, mRenderPaint);
 
-        c.drawRect((float) pix.x - 1, mBarRect.bottom, (float) pix.x + 1,
-                mViewPortHandler.contentBottom(), mHighlightPaint);
+        c.drawRect((float) pix.x - 2, mBarRect.bottom + 4, (float) pix.x + 2,
+                mViewPortHandler.contentBottom(), mRenderPaint);
     }
 
     /**
