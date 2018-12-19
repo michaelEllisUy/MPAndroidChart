@@ -141,7 +141,6 @@ public class BarEntry extends Entry {
         super(x, findMaxVal(vals), icon, data);
         this.mYVals = vals;
         calcAtlasRanges();
-        int i = 1;
     }
 
     private static float findMaxVal(float[] vals) {

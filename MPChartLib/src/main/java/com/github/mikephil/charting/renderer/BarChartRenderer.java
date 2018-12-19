@@ -367,17 +367,12 @@ public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
             mHighlightPaint.setColor(set.getHighLightColor());
             mHighlightPaint.setAlpha(set.getHighLightAlpha());
 
-            boolean isStack = (high.getStackIndex() >= 0 && e.isStacked()) ? true : false;
-
-            final float y1;
-            final float y2;
-
-
             int stackIndex = high.getStackIndex() == -1 ? 0 : high.getStackIndex();
             Range range = e.getRanges()[stackIndex];
 
-            y1 = range.from;
-            y2 = range.to;
+
+            final float y1 = range.from;
+            final float y2 = range.to;
 
             prepareBarHighlight(e.getX(), y1, y2, barData.getBarWidth() / 2f, trans);
 
@@ -397,12 +392,13 @@ public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
     private void drawVerticalselectorHighlight(Canvas c, BarEntry e, Transformer trans) {
         // create vertical path
         MPPointD pix = trans.getPixelForValues(e.getX(), 0);
+        if (!(mBarRect.top == 0 && mBarRect.bottom == 0)) {
+            c.drawRect((float) pix.x - 2, mViewPortHandler.contentTop(), (float) pix.x + 2,
+                    mBarRect.top - 4, mRenderPaint);
 
-        c.drawRect((float) pix.x - 2, mViewPortHandler.contentTop(), (float) pix.x + 2,
-                mBarRect.top - 4, mRenderPaint);
-
-        c.drawRect((float) pix.x - 2, mBarRect.bottom + 4, (float) pix.x + 2,
-                mViewPortHandler.contentBottom(), mRenderPaint);
+            c.drawRect((float) pix.x - 2, mBarRect.bottom + 4, (float) pix.x + 2,
+                    mViewPortHandler.contentBottom(), mRenderPaint);
+        }
     }
 
     /**
