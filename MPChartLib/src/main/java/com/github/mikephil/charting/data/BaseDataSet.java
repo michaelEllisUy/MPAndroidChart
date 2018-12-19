@@ -29,6 +29,8 @@ public abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
      */
     protected List<Integer> mColors = null;
 
+    protected List<Integer> mContrastColors = null;
+
     protected GradientColor mGradientColor = null;
 
     protected List<GradientColor> mGradientColors = null;
@@ -132,6 +134,11 @@ public abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
         return mColors;
     }
 
+    @Override
+    public List<Integer> getContrastColors() {
+        return mContrastColors;
+    }
+
     public List<Integer> getValueColors() {
         return mValueColors;
     }
@@ -144,6 +151,11 @@ public abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
     @Override
     public int getColor(int index) {
         return mColors.get(index % mColors.size());
+    }
+
+    @Override
+    public int getContrastColor(int index) {
+        return mContrastColors.get(index % mContrastColors.size());
     }
 
     @Override
@@ -189,6 +201,10 @@ public abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
      */
     public void setColors(int... colors) {
         this.mColors = ColorTemplate.createColors(colors);
+    }
+
+    public void setContrastColors(int... contrastColors) {
+        this.mContrastColors = ColorTemplate.createColors(contrastColors);
     }
 
     /**

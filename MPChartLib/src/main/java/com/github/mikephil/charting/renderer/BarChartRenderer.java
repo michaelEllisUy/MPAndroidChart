@@ -3,13 +3,16 @@ package com.github.mikephil.charting.renderer;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.Region;
 import android.graphics.drawable.Drawable;
 
 import com.github.mikephil.charting.animation.ChartAnimator;
 import com.github.mikephil.charting.buffer.BarBuffer;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Triplet;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.highlight.Range;
@@ -22,15 +25,20 @@ import com.github.mikephil.charting.utils.Utils;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import android.graphics.LinearGradient;
+import android.text.TextPaint;
 
 import com.github.mikephil.charting.model.GradientColor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
 
     protected BarDataProvider mChart;
     private int barRadius = 25;
+    private TextPaint descriptionTextPaint;
+    private int textSize = 30;
+    private int descriptionPadding = 15;
 
     /**
      * the rect object that is used for drawing the bars
@@ -58,6 +66,11 @@ public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
 
         mBarBorderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mBarBorderPaint.setStyle(Paint.Style.STROKE);
+
+        descriptionTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
+        descriptionTextPaint.setTextAlign(Paint.Align.LEFT);
+        descriptionTextPaint.setTextSize(textSize);
+        descriptionTextPaint.setColor(Color.WHITE);
     }
 
     @Override
@@ -382,11 +395,93 @@ public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
             mBarRect.right -= 4;
 
             mRenderPaint.setColor(set.getColor(stackIndex));
+            descriptionTextPaint.setColor(set.getContrastColor(stackIndex));
 
+            Rect currentBounds = c.getClipBounds();
+            c.clipRect(currentBounds.left, currentBounds.top - textSize * 3,
+                    currentBounds.right, currentBounds.bottom, Region.Op.REPLACE);
             drawVerticalselectorHighlight(c, e, trans);
 
-// Un-comment to draw shadow
-//            c.drawRoundRect(mBarRect, barRadius, barRadius, mHighlightPaint);
+            drawTopData(c, e, trans, stackIndex);
+
+            c.clipRect(currentBounds);
+
+            // Un-comment to draw shadow
+            // c.drawRoundRect(mBarRect, barRadius, barRadius, mHighlightPaint);
+        }
+    }
+
+    private void drawTopData(Canvas c, BarEntry e, Transformer trans, int stackIndex) {
+        MPPointD pix = trans.getPixelForValues(e.getX(), 0);
+        if (!(mBarRect.top - mBarRect.bottom == 0)) {
+
+            if (e.getData() instanceof ArrayList) {
+                List dataObjects = (List) e.getData();
+                Object o = dataObjects.get(stackIndex);
+                if (o instanceof Triplet) {
+                    Triplet triplet = (Triplet) o;
+                    String first = triplet.getFirst();
+                    String second = triplet.getSecond();
+                    String third = triplet.getThird();
+
+                    float firstTextMeasure = descriptionTextPaint.measureText(first);
+                    float secondTextMeasure = descriptionTextPaint.measureText(second);
+                    float thirdTextMeasure = third == null ? 0 : descriptionTextPaint.measureText(third);
+
+                    float textWidth = firstTextMeasure + secondTextMeasure + thirdTextMeasure;
+
+                    float totalPadding = third == null ? descriptionPadding * 6 + 4 : descriptionPadding * 8 + 2;
+
+                    textWidth += totalPadding;
+
+                    //Drawing text container
+                    float left = (float) pix.x - textWidth / 2;
+                    float right = (float) pix.x + textWidth / 2;
+                    if (left < c.getClipBounds().left) {
+                        right = right - left + c.getClipBounds().left;
+                        left = c.getClipBounds().left;
+                    } else if (right > c.getClipBounds().right) {
+                        left = c.getClipBounds().right - (right - left);
+                        right = c.getClipBounds().right;
+                    }
+
+                    c.drawRoundRect(left,
+                            mViewPortHandler.contentTop() - textSize * 3,
+                            right,
+                            mViewPortHandler.contentTop() - textSize,
+                            barRadius,
+                            barRadius,
+                            mRenderPaint);
+
+                    drawDescription(c, first, second, third, left);
+                }
+            }
+        }
+    }
+
+    private void drawDescription(Canvas c, String first, String second, String third, float left) {
+        //Drawing first
+        drawSingleText(c, first, left + descriptionPadding, true);
+        float firstDividerBarLeft = left + descriptionPadding * 2 + descriptionTextPaint.measureText(first);
+        drawSingleText(c, second, firstDividerBarLeft + descriptionPadding, third != null);
+        float secondDividerBarLeft = firstDividerBarLeft + descriptionPadding * 2
+                + descriptionTextPaint.measureText(second);
+        drawSingleText(c, third, secondDividerBarLeft + descriptionPadding, false);
+    }
+
+    private void drawSingleText(Canvas c, String text, float left, boolean drawEndDivider) {
+        c.drawText(text,
+                left + descriptionPadding,
+                mViewPortHandler.contentTop() - textSize * 5 / 3,
+                descriptionTextPaint);
+
+        if (drawEndDivider) {
+            float firstDividerBarLeft = left + descriptionPadding * 2 + descriptionTextPaint.measureText(text);
+            c.drawRect(firstDividerBarLeft,
+                    mViewPortHandler.contentTop() - textSize * 3,
+                    firstDividerBarLeft + 2,
+                    mViewPortHandler.contentTop() - textSize,
+                    descriptionTextPaint);
         }
     }
 
@@ -394,7 +489,7 @@ public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
         // create vertical path
         MPPointD pix = trans.getPixelForValues(e.getX(), 0);
         if (!(mBarRect.top - mBarRect.bottom == 0)) {
-            c.drawRect((float) pix.x - 2, mViewPortHandler.contentTop(), (float) pix.x + 2,
+            c.drawRect((float) pix.x - 2, mViewPortHandler.contentTop() - textSize, (float) pix.x + 2,
                     mBarRect.top - 4, mRenderPaint);
 
             c.drawRect((float) pix.x - 2, mBarRect.bottom + 4, (float) pix.x + 2,

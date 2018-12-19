@@ -28,6 +28,7 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.Triplet;
 import com.github.mikephil.charting.formatter.StackedValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
@@ -83,6 +84,7 @@ public class StackedBarActivity extends DemoBase implements OnSeekBarChangeListe
         YAxis rightAxis = chart.getAxisRight();
         //TODO: Replace this with the correct minimum! :)
         rightAxis.setDrawZeroLine(true); // this replaces setStartAtZero(true)
+        chart.setExtraOffsets(0, 40, 0, 0);
         chart.getAxisLeft().setEnabled(false);
 
         XAxis xLabels = chart.getXAxis();
@@ -122,14 +124,18 @@ public class StackedBarActivity extends DemoBase implements OnSeekBarChangeListe
         for (int i = 0; i < 24; i++) {
             float val1 = 25;
             float val2 = 50;
-            float val3 = 0;
-            float val4 = 0;
+            float val3 = 60;
+            float val4 = 70;
+
+            List<Triplet> tripletList = new ArrayList<>();
+            tripletList.add(new Triplet("3:30 AM", "Upper Body Workout", String.format("%d - %d bpm", (int) val1, (int) val2)));
+            tripletList.add(new Triplet("3:30 AM", "Upper Body Workout", String.format("%d - %d bpm", (int) val3, (int) val4)));
 
             values.add(new BarEntry(
                     i,
                     new float[]{val1, val2, val3, val4},
                     getResources().getDrawable(R.drawable.star),
-                    false, true));
+                    tripletList, true));
         }
 
         BarDataSet set1;
@@ -144,6 +150,7 @@ public class StackedBarActivity extends DemoBase implements OnSeekBarChangeListe
             set1 = new BarDataSet(values, "Statistics Vienna 2014", true);
             set1.setDrawIcons(false);
             set1.setColors(getColors());
+            set1.setContrastColors(getContrastColors());
             set1.setStackLabels(new String[]{"Births", "Marks"});
 
             ArrayList<IBarDataSet> dataSets = new ArrayList<>();
@@ -283,16 +290,17 @@ public class StackedBarActivity extends DemoBase implements OnSeekBarChangeListe
     public void onNothingSelected() {
     }
 
+    private int[] getContrastColors() {
+        return new int[]{
+                ColorTemplate.rgb("#FFFFFF"),
+                ColorTemplate.rgb("#2e2e2e")
+        };
+    }
+
     private int[] getColors() {
-
-        // have as many colors as stack-values per entry
-        int[] colors = new int[4];
-
-        System.arraycopy(ColorTemplate.MATERIAL_COLORS, 0, colors, 0, 2);
-
         return new int[]{
                 ColorTemplate.rgb("#F15B59"),
-                ColorTemplate.rgb("#FAE500"),
+                ColorTemplate.rgb("#FAE500")
         };
     }
 }
