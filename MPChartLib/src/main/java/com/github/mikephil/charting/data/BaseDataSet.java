@@ -190,6 +190,10 @@ public abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
         this.mColors = colors;
     }
 
+    public void setContrastColors(List<Integer> contrastColors) {
+        this.mContrastColors = contrastColors;
+    }
+
     /**
      * Sets the colors that should be used fore this DataSet. Colors are reused
      * as soon as the number of Entries the DataSet represents is higher than
