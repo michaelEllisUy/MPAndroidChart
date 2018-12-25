@@ -84,6 +84,8 @@ public class StackedBarActivity extends DemoBase implements OnSeekBarChangeListe
         YAxis rightAxis = chart.getAxisRight();
         //TODO: Replace this with the correct minimum! :)
         rightAxis.setDrawZeroLine(true); // this replaces setStartAtZero(true)
+        rightAxis.setAxisMinimum(20);
+        chart.getAxisLeft().setAxisMinimum(20);
         chart.setExtraOffsets(0, 40, 0, 0);
         chart.getAxisLeft().setEnabled(false);
 

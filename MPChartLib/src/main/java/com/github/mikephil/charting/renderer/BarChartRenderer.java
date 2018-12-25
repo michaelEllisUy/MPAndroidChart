@@ -3,6 +3,7 @@ package com.github.mikephil.charting.renderer;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Region;
@@ -398,14 +399,17 @@ public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
             descriptionTextPaint.setColor(set.getContrastColor(stackIndex));
 
             Rect currentBounds = c.getClipBounds();
+
+            c.restore();
+            c.save();
             c.clipRect(currentBounds.left, currentBounds.top - textSize * 3,
-                    currentBounds.right, currentBounds.bottom, Region.Op.REPLACE);
+                    currentBounds.right, currentBounds.bottom);
+
             drawVerticalselectorHighlight(c, e, trans);
 
             drawTopData(c, e, trans, stackIndex);
-
-            c.clipRect(currentBounds);
-
+            c.restore();
+            
             // Un-comment to draw shadow
             // c.drawRoundRect(mBarRect, barRadius, barRadius, mHighlightPaint);
         }
