@@ -40,7 +40,7 @@ public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
     private int barRadius = 25;
     private TextPaint descriptionTextPaint;
     private TextPaint descriptionTextPaintBold;
-    private int textSize = 30;
+    private int textSize = 35;
     private int descriptionPadding = 25;
 
     /**
