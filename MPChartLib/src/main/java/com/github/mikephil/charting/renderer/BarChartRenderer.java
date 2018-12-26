@@ -41,7 +41,7 @@ public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
     private TextPaint descriptionTextPaint;
     private TextPaint descriptionTextPaintBold;
     private int textSize = 30;
-    private int descriptionPadding = 15;
+    private int descriptionPadding = 25;
 
     /**
      * the rect object that is used for drawing the bars
@@ -443,7 +443,7 @@ public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
 
                     float textWidth = firstTextMeasure + secondTextMeasure + thirdTextMeasure;
 
-                    float totalPadding = third == null ? descriptionPadding * 6 + 4 : descriptionPadding * 8 + 2;
+                    float totalPadding = third == null ? descriptionPadding * 5 + 4 : descriptionPadding * 7 + 2;
 
                     textWidth += totalPadding;
 
@@ -474,8 +474,9 @@ public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
 
     private void drawDescription(Canvas c, String first, String second, String third, float left) {
         //Drawing first
-        drawSingleText(c, first, left + descriptionPadding, true, false);
-        float firstDividerBarLeft = left + descriptionPadding * 2 + descriptionTextPaint.measureText(first);
+        float firstTextLeft = left + descriptionPadding / 2;
+        drawSingleText(c, first, firstTextLeft, true, false);
+        float firstDividerBarLeft = firstTextLeft + descriptionPadding + descriptionTextPaint.measureText(first);
         drawSingleText(c, second, firstDividerBarLeft + descriptionPadding, third != null, true);
         float secondDividerBarLeft = firstDividerBarLeft + descriptionPadding * 2
                 + descriptionTextPaintBold.measureText(second);
@@ -494,7 +495,7 @@ public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
             c.drawRect(firstDividerBarLeft,
                     mViewPortHandler.contentTop() - textSize * 3 + 10,
                     firstDividerBarLeft + 2,
-                    mViewPortHandler.contentTop() - textSize  - 10,
+                    mViewPortHandler.contentTop() - textSize - 10,
                     descriptionTextPaint);
         }
     }
