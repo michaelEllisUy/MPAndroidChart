@@ -76,6 +76,11 @@ public abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
     protected boolean mDrawValues = true;
 
     /**
+     * if true, y-values are drawn on the chart
+     */
+    protected boolean mDrawLegends = true;
+
+    /**
      * if true, y-icons are drawn on the chart
      */
     protected boolean mDrawIcons = true;
@@ -438,6 +443,16 @@ public abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
     @Override
     public boolean isDrawValuesEnabled() {
         return mDrawValues;
+    }
+
+    @Override
+    public void setDrawLegends(boolean enabled) {
+        this.mDrawLegends = enabled;
+    }
+
+    @Override
+    public boolean isDrawLegendsEnabled() {
+        return this.mDrawLegends;
     }
 
     @Override

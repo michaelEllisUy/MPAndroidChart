@@ -153,7 +153,7 @@ public class StackedBarActivity extends DemoBase implements OnSeekBarChangeListe
             set1.setDrawIcons(false);
             set1.setColors(getColors());
             set1.setContrastColors(getContrastColors());
-            set1.setStackLabels(new String[]{"Births", "Marks"});
+            set1.setDrawLegends(false);
 
             ArrayList<IBarDataSet> dataSets = new ArrayList<>();
             dataSets.add(set1);

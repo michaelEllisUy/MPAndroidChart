@@ -473,6 +473,21 @@ public interface IDataSet<T extends Entry> {
     boolean isDrawValuesEnabled();
 
     /**
+     * set this to true to draw legends on the chart.
+     * if this is enabled
+     *
+     * @param enabled
+     */
+    void setDrawLegends(boolean enabled);
+
+    /**
+     * Returns true if legends drawing is enabled, false if not
+     *
+     * @return
+     */
+    boolean isDrawLegendsEnabled();
+
+    /**
      * Set this to true to draw y-icons on the chart.
      * <p>
      * NOTE (for bar and line charts): if `maxVisibleCount` is reached, no icons will be drawn even
