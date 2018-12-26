@@ -2,13 +2,13 @@ package com.github.mikephil.charting.renderer;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.LinearGradient;
 import android.graphics.Paint;
-import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.Region;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.text.TextPaint;
 
 import com.github.mikephil.charting.animation.ChartAnimator;
 import com.github.mikephil.charting.buffer.BarBuffer;
@@ -20,28 +20,24 @@ import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.highlight.Range;
 import com.github.mikephil.charting.interfaces.dataprovider.BarDataProvider;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
+import com.github.mikephil.charting.model.GradientColor;
 import com.github.mikephil.charting.utils.MPPointD;
 import com.github.mikephil.charting.utils.MPPointF;
 import com.github.mikephil.charting.utils.Transformer;
 import com.github.mikephil.charting.utils.Utils;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
-import android.graphics.LinearGradient;
-import android.text.TextPaint;
-
-import com.github.mikephil.charting.model.GradientColor;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
-
+    private static final int DIVIDER_WIDTH = 2;
+    private static final int BAR_RADIUS = 35;
+    private static final int DESCRIPTION_PADDING = 25;
     protected BarDataProvider mChart;
-    private int barRadius = 25;
     private TextPaint descriptionTextPaint;
     private TextPaint descriptionTextPaintBold;
     private int textSize = 35;
-    private int descriptionPadding = 25;
 
     /**
      * the rect object that is used for drawing the bars
@@ -217,11 +213,11 @@ public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
             }
 
             c.drawRoundRect(buffer.buffer[j] + 4, buffer.buffer[j + 1], buffer.buffer[j + 2] - 4,
-                    buffer.buffer[j + 3], barRadius, barRadius, mRenderPaint);
+                    buffer.buffer[j + 3], BAR_RADIUS, BAR_RADIUS, mRenderPaint);
 
             if (drawBorder) {
                 c.drawRoundRect(buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2],
-                        buffer.buffer[j + 3], barRadius, barRadius, mBarBorderPaint);
+                        buffer.buffer[j + 3], BAR_RADIUS, BAR_RADIUS, mBarBorderPaint);
             }
         }
     }
@@ -420,7 +416,7 @@ public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
             c.restore();
 
             // Un-comment to draw shadow
-            // c.drawRoundRect(mBarRect, barRadius, barRadius, mHighlightPaint);
+            // c.drawRoundRect(mBarRect, BAR_RADIUS, BAR_RADIUS, mHighlightPaint);
         }
     }
 
@@ -443,7 +439,7 @@ public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
 
                     float textWidth = firstTextMeasure + secondTextMeasure + thirdTextMeasure;
 
-                    float totalPadding = third == null ? descriptionPadding * 5 + 4 : descriptionPadding * 7 + 2;
+                    float totalPadding = third == null ? DESCRIPTION_PADDING * 5 + 4 : DESCRIPTION_PADDING * 7 + 2;
 
                     textWidth += totalPadding;
 
@@ -458,44 +454,53 @@ public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
                         right = c.getClipBounds().right;
                     }
 
+                    float containerStartY = mViewPortHandler.contentTop() / 4;
+                    float containerEndY = mViewPortHandler.contentTop() * 3 / 4;
+
                     c.drawRoundRect(left,
-                            mViewPortHandler.contentTop() - textSize * 3,
+                            containerStartY,
                             right,
-                            mViewPortHandler.contentTop() - textSize,
-                            barRadius,
-                            barRadius,
+                            containerEndY,
+                            BAR_RADIUS,
+                            BAR_RADIUS,
                             mRenderPaint);
 
-                    drawDescription(c, first, second, third, left);
+                    drawDescription(c, first, second, third, left, containerStartY, containerEndY);
                 }
             }
         }
     }
 
-    private void drawDescription(Canvas c, String first, String second, String third, float left) {
+    private void drawDescription(Canvas c, String first, String second, String third, float left,
+                                 float containerStartY, float containerEndY) {
         //Drawing first
-        float firstTextLeft = left + descriptionPadding / 2;
-        drawSingleText(c, first, firstTextLeft, true, false);
-        float firstDividerBarLeft = firstTextLeft + descriptionPadding + descriptionTextPaint.measureText(first);
-        drawSingleText(c, second, firstDividerBarLeft + descriptionPadding, third != null, true);
-        float secondDividerBarLeft = firstDividerBarLeft + descriptionPadding * 2
+        float firstTextLeft = left + DESCRIPTION_PADDING / 2;
+        float textY = (containerEndY - containerStartY - textSize) / 2 + containerStartY + textSize;
+        drawSingleText(c, first, firstTextLeft, true, false, textY);
+        float firstDividerBarLeft = firstTextLeft + DESCRIPTION_PADDING + DIVIDER_WIDTH
+                + descriptionTextPaint.measureText(first);
+        drawSingleText(c, second, firstDividerBarLeft + DESCRIPTION_PADDING, third != null,
+                true, textY);
+        float secondDividerBarLeft = firstDividerBarLeft + DESCRIPTION_PADDING * 2 + DIVIDER_WIDTH
                 + descriptionTextPaintBold.measureText(second);
-        drawSingleText(c, third, secondDividerBarLeft + descriptionPadding, false, true);
+        drawSingleText(c, third, secondDividerBarLeft + DESCRIPTION_PADDING, false,
+                true, textY);
     }
 
     private void drawSingleText(Canvas c, String text, float left, boolean drawEndDivider,
-                                boolean isBoldText) {
+                                boolean isBoldText, float textY) {
+        TextPaint paint = isBoldText ? descriptionTextPaintBold : descriptionTextPaint;
         c.drawText(text,
-                left + descriptionPadding,
-                mViewPortHandler.contentTop() - textSize * 5 / 3,
-                isBoldText ? descriptionTextPaintBold : descriptionTextPaint);
+                left + DESCRIPTION_PADDING,
+                textY - paint.descent() / 2,
+                paint);
 
         if (drawEndDivider) {
-            float firstDividerBarLeft = left + descriptionPadding * 2 + descriptionTextPaint.measureText(text);
+            float firstDividerBarLeft = left + DESCRIPTION_PADDING * 2 + paint.measureText(text);
             c.drawRect(firstDividerBarLeft,
-                    mViewPortHandler.contentTop() - textSize * 3 + 10,
-                    firstDividerBarLeft + 2,
-                    mViewPortHandler.contentTop() - textSize - 10,
+                    textY - textSize - 5,
+                    firstDividerBarLeft + DIVIDER_WIDTH,
+                    textY + 5,
                     descriptionTextPaint);
         }
     }
