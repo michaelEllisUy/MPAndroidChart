@@ -445,10 +445,9 @@ public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
     }
 
     private void drawDescription(Canvas c, MPPointD pix, Triplet o) {
-        Triplet triplet = o;
-        String first = triplet.getFirst();
-        String second = triplet.getSecond();
-        String third = triplet.getThird();
+        String first = o.getFirst();
+        String second = o.getSecond();
+        String third = o.getThird();
 
         float firstTextMeasure = descriptionTextPaint.measureText(first);
         float secondTextMeasure = descriptionTextPaintBold.measureText(second);

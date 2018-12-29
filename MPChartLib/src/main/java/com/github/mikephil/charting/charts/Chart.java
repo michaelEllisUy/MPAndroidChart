@@ -393,6 +393,7 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
     protected void onDraw(Canvas canvas) {
         // super.onDraw(canvas);
         getParent().requestDisallowInterceptTouchEvent(true);
+        canvas.drawColor(Color.WHITE);
         if (mData == null) {
 
             boolean hasText = !TextUtils.isEmpty(mNoDataText);
