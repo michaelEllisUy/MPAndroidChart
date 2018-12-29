@@ -1,36 +1,37 @@
 package com.github.mikephil.charting.data;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 public class Triplet {
-    @Nullable
+    @NonNull
     String first;
-    @Nullable
+    @NonNull
     String second;
     @Nullable
     String third;
 
-    public Triplet(@Nullable String first, @Nullable String second, @Nullable String third) {
+    public Triplet(@NonNull String first, @NonNull String second, @Nullable String third) {
         this.first = first;
         this.second = second;
         this.third = third;
     }
 
-    public Triplet(@Nullable String first, @Nullable String second) {
+    public Triplet(@NonNull String first, @NonNull String second) {
         this.first = first;
         this.second = second;
     }
 
-    public Triplet(@Nullable String first) {
+    public Triplet(@NonNull String first) {
         this.first = first;
     }
 
-    @Nullable
+    @NonNull
     public String getFirst() {
         return first;
     }
 
-    @Nullable
+    @NonNull
     public String getSecond() {
         return second;
     }

@@ -30,6 +30,9 @@ import com.github.mikephil.charting.utils.ViewPortHandler;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
     private static final int DIVIDER_WIDTH = 2;
     private static final int BAR_RADIUS = 35;
@@ -482,7 +485,7 @@ public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
         drawDescription(c, first, second, third, left, containerStartY, containerEndY);
     }
 
-    private void drawDescription(Canvas c, String first, String second, String third, float left,
+    private void drawDescription(Canvas c, @NonNull String first, @NonNull String second, @Nullable String third, float left,
                                  float containerStartY, float containerEndY) {
         //Drawing first
         float firstTextLeft = left + DESCRIPTION_PADDING / 2;
@@ -492,10 +495,12 @@ public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
                 + descriptionTextPaint.measureText(first);
         drawSingleText(c, second, firstDividerBarLeft + DESCRIPTION_PADDING, third != null,
                 true, textY);
-        float secondDividerBarLeft = firstDividerBarLeft + DESCRIPTION_PADDING * 2 + DIVIDER_WIDTH
-                + descriptionTextPaintBold.measureText(second);
-        drawSingleText(c, third, secondDividerBarLeft + DESCRIPTION_PADDING, false,
-                true, textY);
+        if (third != null) {
+            float secondDividerBarLeft = firstDividerBarLeft + DESCRIPTION_PADDING * 2 + DIVIDER_WIDTH
+                    + descriptionTextPaintBold.measureText(second);
+            drawSingleText(c, third, secondDividerBarLeft + DESCRIPTION_PADDING, false,
+                    true, textY);
+        }
     }
 
     private void drawSingleText(Canvas c, String text, float left, boolean drawEndDivider,
