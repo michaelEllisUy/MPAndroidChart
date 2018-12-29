@@ -212,8 +212,13 @@ public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
                                 android.graphics.Shader.TileMode.MIRROR));
             }
 
-            c.drawRoundRect(buffer.buffer[j] + 4, buffer.buffer[j + 1], buffer.buffer[j + 2] - 4,
-                    buffer.buffer[j + 3], BAR_RADIUS, BAR_RADIUS, mRenderPaint);
+            if (mChart.areBarsRectangles()) {
+                c.drawRect(buffer.buffer[j] + 4, buffer.buffer[j + 1], buffer.buffer[j + 2] - 4,
+                        buffer.buffer[j + 3], mRenderPaint);
+            } else {
+                c.drawRoundRect(buffer.buffer[j] + 4, buffer.buffer[j + 1], buffer.buffer[j + 2] - 4,
+                        buffer.buffer[j + 3], BAR_RADIUS, BAR_RADIUS, mRenderPaint);
+            }
 
             if (drawBorder) {
                 c.drawRoundRect(buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2],
@@ -428,47 +433,53 @@ public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
                 List dataObjects = (List) e.getData();
                 Object o = dataObjects.get(stackIndex);
                 if (o instanceof Triplet) {
-                    Triplet triplet = (Triplet) o;
-                    String first = triplet.getFirst();
-                    String second = triplet.getSecond();
-                    String third = triplet.getThird();
-
-                    float firstTextMeasure = descriptionTextPaint.measureText(first);
-                    float secondTextMeasure = descriptionTextPaintBold.measureText(second);
-                    float thirdTextMeasure = third == null ? 0 : descriptionTextPaintBold.measureText(third);
-
-                    float textWidth = firstTextMeasure + secondTextMeasure + thirdTextMeasure;
-
-                    float totalPadding = third == null ? DESCRIPTION_PADDING * 5 + 4 : DESCRIPTION_PADDING * 7 + 2;
-
-                    textWidth += totalPadding;
-
-                    //Drawing text container
-                    float left = (float) pix.x - textWidth / 2;
-                    float right = (float) pix.x + textWidth / 2;
-                    if (left < c.getClipBounds().left) {
-                        right = right - left + c.getClipBounds().left;
-                        left = c.getClipBounds().left;
-                    } else if (right > c.getClipBounds().right) {
-                        left = c.getClipBounds().right - (right - left);
-                        right = c.getClipBounds().right;
-                    }
-
-                    float containerStartY = mViewPortHandler.contentTop() / 4;
-                    float containerEndY = mViewPortHandler.contentTop() * 3 / 4;
-
-                    c.drawRoundRect(left,
-                            containerStartY,
-                            right,
-                            containerEndY,
-                            BAR_RADIUS,
-                            BAR_RADIUS,
-                            mRenderPaint);
-
-                    drawDescription(c, first, second, third, left, containerStartY, containerEndY);
+                    drawDescription(c, pix, (Triplet) o);
                 }
+            } else if (e.getData() instanceof Triplet) {
+                drawDescription(c, pix, (Triplet) e.getData());
             }
         }
+    }
+
+    private void drawDescription(Canvas c, MPPointD pix, Triplet o) {
+        Triplet triplet = o;
+        String first = triplet.getFirst();
+        String second = triplet.getSecond();
+        String third = triplet.getThird();
+
+        float firstTextMeasure = descriptionTextPaint.measureText(first);
+        float secondTextMeasure = descriptionTextPaintBold.measureText(second);
+        float thirdTextMeasure = third == null ? 0 : descriptionTextPaintBold.measureText(third);
+
+        float textWidth = firstTextMeasure + secondTextMeasure + thirdTextMeasure;
+
+        float totalPadding = third == null ? DESCRIPTION_PADDING * 5 + 4 : DESCRIPTION_PADDING * 7 + 2;
+
+        textWidth += totalPadding;
+
+        //Drawing text container
+        float left = (float) pix.x - textWidth / 2;
+        float right = (float) pix.x + textWidth / 2;
+        if (left < c.getClipBounds().left) {
+            right = right - left + c.getClipBounds().left;
+            left = c.getClipBounds().left;
+        } else if (right > c.getClipBounds().right) {
+            left = c.getClipBounds().right - (right - left);
+            right = c.getClipBounds().right;
+        }
+
+        float containerStartY = mViewPortHandler.contentTop() / 4;
+        float containerEndY = mViewPortHandler.contentTop() * 3 / 4;
+
+        c.drawRoundRect(left,
+                containerStartY,
+                right,
+                containerEndY,
+                BAR_RADIUS,
+                BAR_RADIUS,
+                mRenderPaint);
+
+        drawDescription(c, first, second, third, left, containerStartY, containerEndY);
     }
 
     private void drawDescription(Canvas c, String first, String second, String third, float left,

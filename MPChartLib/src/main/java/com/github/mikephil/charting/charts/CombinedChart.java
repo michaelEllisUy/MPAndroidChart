@@ -164,6 +164,11 @@ public class CombinedChart extends BarLineChartBase<CombinedData> implements Com
     }
 
     @Override
+    public boolean areBarsRectangles() {
+        return false;
+    }
+
+    @Override
     public boolean isDrawValueAboveBarEnabled() {
         return mDrawValueAboveBar;
     }

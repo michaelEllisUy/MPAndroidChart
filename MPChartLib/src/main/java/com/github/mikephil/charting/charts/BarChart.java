@@ -36,6 +36,8 @@ public class BarChart extends BarLineChartBase<BarData> implements BarDataProvid
      */
     private boolean mDrawBarShadow = false;
 
+    private boolean mRectangledBars = false;
+
     private boolean mFitBars = false;
 
     public BarChart(Context context) {
@@ -186,6 +188,24 @@ public class BarChart extends BarLineChartBase<BarData> implements BarDataProvid
      */
     public boolean isDrawBarShadowEnabled() {
         return mDrawBarShadow;
+    }
+
+    /**
+     * returns true if bars should be rectangle bars
+     *
+     * @return
+     */
+    public boolean areBarsRectangles() {
+        return mRectangledBars;
+    }
+
+    /**
+     * If set to true, bars should be drawn as rectangles
+     *
+     * @param areRectangled
+     */
+    public void setRectangledBars(boolean areRectangled) {
+        mRectangledBars = areRectangled;
     }
 
     /**

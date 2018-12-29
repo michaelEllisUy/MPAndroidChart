@@ -111,6 +111,8 @@ public class StackedBarActivity extends DemoBase implements OnSeekBarChangeListe
         l.setFormToTextSpace(4f);
         l.setXEntrySpace(6f);
 
+        chart.setRectangledBars(false);
+
         chart.animateY(1500, Easing.EaseInOutCubic);
         // chart.setDrawLegend(false);
     }
