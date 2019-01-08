@@ -94,7 +94,8 @@ public class StackedBarActivity extends DemoBase implements OnSeekBarChangeListe
         xLabels.setGranularityEnabled(true);
         xLabels.setOneGridLinePerUnit(true);
         xLabels.enableGridDashedLine(20, 10, 0);
-        xLabels.setLabelCount(8);
+        xLabels.setLabelDistance(7);
+        xLabels.setLabelStart(1);
         xLabels.setPosition(XAxisPosition.BOTTOM);
         // chart.setDrawXLabels(false);
         // chart.setDrawYLabels(false);
@@ -125,7 +126,7 @@ public class StackedBarActivity extends DemoBase implements OnSeekBarChangeListe
 
         ArrayList<BarEntry> values = new ArrayList<>();
 
-        for (int i = 0; i < 24; i++) {
+        for (int i = 1; i < 31; i++) {
             float val1 = 25;
             float val2 = 50;
             float val3 = 60;

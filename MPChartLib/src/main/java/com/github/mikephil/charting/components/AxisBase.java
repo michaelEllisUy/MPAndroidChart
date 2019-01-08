@@ -57,6 +57,16 @@ public abstract class AxisBase extends ComponentBase {
     private int mLabelCount = 6;
 
     /**
+     * the label distance between entries the axis should have, default 6
+     */
+    private int mLabelDistance = -1;
+
+    /**
+     * the label start
+     */
+    private int mLabelStart = -1;
+
+    /**
      * the minimum interval between axis values
      */
     protected float mGranularity = 1.0f;
@@ -323,6 +333,23 @@ public abstract class AxisBase extends ComponentBase {
         mForceLabels = false;
     }
 
+    public void setLabelDistance(int labelDistance) {
+        mLabelDistance = labelDistance;
+        mForceLabels = false;
+    }
+
+    public int getLabelStart() {
+        return mLabelStart;
+    }
+
+    public void setLabelStart(int start) {
+        mLabelStart = start;
+    }
+
+    public int getLabelDistance() {
+        return mLabelDistance;
+    }
+
     /**
      * sets the number of label entries for the y-axis max = 25, min = 2, default: 6, be aware
      * that this number is not
@@ -454,7 +481,9 @@ public abstract class AxisBase extends ComponentBase {
      *
      * @param enabled
      */
-    public void setDrawGridLinesBehindData(boolean enabled) { mDrawGridLinesBehindData = enabled; }
+    public void setDrawGridLinesBehindData(boolean enabled) {
+        mDrawGridLinesBehindData = enabled;
+    }
 
     public boolean isDrawGridLinesBehindDataEnabled() {
         return mDrawGridLinesBehindData;
@@ -514,7 +543,7 @@ public abstract class AxisBase extends ComponentBase {
 
         if (mAxisValueFormatter == null ||
                 (mAxisValueFormatter instanceof DefaultAxisValueFormatter &&
-                        ((DefaultAxisValueFormatter)mAxisValueFormatter).getDecimalDigits() != mDecimals))
+                        ((DefaultAxisValueFormatter) mAxisValueFormatter).getDecimalDigits() != mDecimals))
             mAxisValueFormatter = new DefaultAxisValueFormatter(mDecimals);
 
         return mAxisValueFormatter;
@@ -751,32 +780,28 @@ public abstract class AxisBase extends ComponentBase {
     /**
      * Gets extra spacing for `axisMinimum` to be added to automatically calculated `axisMinimum`
      */
-    public float getSpaceMin()
-    {
+    public float getSpaceMin() {
         return mSpaceMin;
     }
 
     /**
      * Sets extra spacing for `axisMinimum` to be added to automatically calculated `axisMinimum`
      */
-    public void setSpaceMin(float mSpaceMin)
-    {
+    public void setSpaceMin(float mSpaceMin) {
         this.mSpaceMin = mSpaceMin;
     }
 
     /**
      * Gets extra spacing for `axisMaximum` to be added to automatically calculated `axisMaximum`
      */
-    public float getSpaceMax()
-    {
+    public float getSpaceMax() {
         return mSpaceMax;
     }
 
     /**
      * Sets extra spacing for `axisMaximum` to be added to automatically calculated `axisMaximum`
      */
-    public void setSpaceMax(float mSpaceMax)
-    {
+    public void setSpaceMax(float mSpaceMax) {
         this.mSpaceMax = mSpaceMax;
     }
 }
