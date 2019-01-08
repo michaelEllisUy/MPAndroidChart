@@ -127,10 +127,10 @@ public class StackedBarActivity extends DemoBase implements OnSeekBarChangeListe
         ArrayList<BarEntry> values = new ArrayList<>();
 
         for (int i = 1; i < 31; i++) {
-            float val1 = 25;
-            float val2 = 50;
-            float val3 = 60;
-            float val4 = 70;
+            float val1 = 55;
+            float val2 = 80;
+            float val3 = 70;
+            float val4 = 90;
 
             List<Triplet> tripletList = new ArrayList<>();
             tripletList.add(new Triplet("3:30 AM", "Upper Body Workout", String.format("%d - %d bpm", (int) val1, (int) val2)));

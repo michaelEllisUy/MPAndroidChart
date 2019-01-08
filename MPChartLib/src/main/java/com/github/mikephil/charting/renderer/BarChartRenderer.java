@@ -219,8 +219,16 @@ public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
                 c.drawRect(buffer.buffer[j] + 4, buffer.buffer[j + 1], buffer.buffer[j + 2] - 4,
                         buffer.buffer[j + 3], mRenderPaint);
             } else {
-                c.drawRoundRect(buffer.buffer[j] + 4, buffer.buffer[j + 1], buffer.buffer[j + 2] - 4,
-                        buffer.buffer[j + 3], BAR_RADIUS, BAR_RADIUS, mRenderPaint);
+                float top = buffer.buffer[j + 1];
+                float bottom = buffer.buffer[j + 3];
+                if (top != bottom) {
+                    c.drawRoundRect(buffer.buffer[j] + 4, top, buffer.buffer[j + 2] - 4,
+                            bottom, BAR_RADIUS, BAR_RADIUS, mRenderPaint);
+                } else if (top != 0) {
+                    float left = buffer.buffer[j] + 4;
+                    float right = buffer.buffer[j + 2];
+                    c.drawCircle(left + (right - left) / 2, top, (right - left) / 2, mRenderPaint);
+                }
             }
 
             if (drawBorder) {
@@ -390,8 +398,10 @@ public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
 
             Transformer trans = mChart.getTransformer(set.getAxisDependency());
 
-            mHighlightPaint.setColor(set.getHighLightColor());
-            mHighlightPaint.setAlpha(set.getHighLightAlpha());
+            int highlightColor = high.getStackIndex() == -1
+                    ? set.getHighLightColor() : barData.getColors()[high.getStackIndex()];
+
+            mHighlightPaint.setColor(highlightColor);
 
             int stackIndex = high.getStackIndex() == -1 ? 0 : high.getStackIndex();
             Range range = e.getRanges()[stackIndex];

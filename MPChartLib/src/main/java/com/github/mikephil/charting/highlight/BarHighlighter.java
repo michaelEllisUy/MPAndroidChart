@@ -20,7 +20,7 @@ public class BarHighlighter extends ChartHighlighter<BarDataProvider> {
     public Highlight getHighlight(float x, float y) {
         Highlight high = super.getHighlight(x, y);
 
-        if(high == null) {
+        if (high == null) {
             return null;
         }
 
@@ -104,12 +104,22 @@ public class BarHighlighter extends ChartHighlighter<BarDataProvider> {
             return 0;
 
         int stackIndex = 0;
+        int prioritizedStackIndex = -1;
 
         for (Range range : ranges) {
-            if (range.contains(value))
-                return stackIndex;
-            else
-                stackIndex++;
+            if (range.from == range.to && range.from != 0) {
+                range.from = range.from - 1;
+                range.to = range.to + 1;
+            }
+
+            if (range.contains(value)) {
+                prioritizedStackIndex = stackIndex;
+            }
+            stackIndex++;
+        }
+
+        if (prioritizedStackIndex != -1) {
+            return prioritizedStackIndex;
         }
 
         int length = Math.max(ranges.length - 1, 0);
