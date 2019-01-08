@@ -225,9 +225,9 @@ public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
                     c.drawRoundRect(buffer.buffer[j] + 4, top, buffer.buffer[j + 2] - 4,
                             bottom, BAR_RADIUS, BAR_RADIUS, mRenderPaint);
                 } else if (top != 0) {
-                    float left = buffer.buffer[j] + 4;
+                    float left = buffer.buffer[j];
                     float right = buffer.buffer[j + 2];
-                    c.drawCircle(left + (right - left) / 2, top, (right - left) / 2, mRenderPaint);
+                    c.drawCircle(left + (right - left) / 2, top, (right - left) / 2 - 2, mRenderPaint);
                 }
             }
 
@@ -244,6 +244,11 @@ public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
         float right = x + barWidthHalf;
         float top = y1;
         float bottom = y2;
+
+        if (top == bottom && top != 0) {
+            top -= barWidthHalf * 2;
+            bottom += barWidthHalf * 2;
+        }
 
         mBarRect.set(left, top, right, bottom);
 
@@ -406,9 +411,8 @@ public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
             int stackIndex = high.getStackIndex() == -1 ? 0 : high.getStackIndex();
             Range range = e.getRanges()[stackIndex];
 
-
-            final float y1 = range.from;
-            final float y2 = range.to;
+            float y1 = range.from;
+            float y2 = range.to;
 
             prepareBarHighlight(e.getX(), y1, y2, barData.getBarWidth() / 2f, trans);
 

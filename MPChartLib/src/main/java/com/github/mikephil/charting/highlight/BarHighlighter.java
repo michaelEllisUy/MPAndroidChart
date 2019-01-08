@@ -107,12 +107,11 @@ public class BarHighlighter extends ChartHighlighter<BarDataProvider> {
         int prioritizedStackIndex = -1;
 
         for (Range range : ranges) {
-            if (range.from == range.to && range.from != 0) {
-                range.from = range.from - 1;
-                range.to = range.to + 1;
-            }
+            float to = range.to;
+            float from = range.from;
 
-            if (range.contains(value)) {
+            if (range.contains(value)
+                    || (from == to && from != 0 && value >= from - 1 && value <= to + 1)) {
                 prioritizedStackIndex = stackIndex;
             }
             stackIndex++;
