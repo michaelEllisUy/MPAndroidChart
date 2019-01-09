@@ -430,7 +430,7 @@ public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
             c.restore();
             c.save();
             c.clipRect(currentBounds.left, currentBounds.top - textSize * 3,
-                    currentBounds.right, currentBounds.bottom + 10);
+                    currentBounds.right, currentBounds.bottom + Utils.convertDpToPixel(4));
 
             drawVerticalselectorHighlight(c, e, trans);
 
@@ -539,10 +539,10 @@ public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
         MPPointD pix = trans.getPixelForValues(e.getX(), 0);
         if (!(mBarRect.top - mBarRect.bottom == 0)) {
             c.drawRect((float) pix.x - 2, mViewPortHandler.contentTop() - textSize, (float) pix.x + 2,
-                    mBarRect.top - 4, mRenderPaint);
+                    mBarRect.top - Utils.convertDpToPixel(2), mRenderPaint);
 
-            c.drawRect((float) pix.x - 2, mBarRect.bottom + 4, (float) pix.x + 2,
-                    mViewPortHandler.contentBottom() + 10, mRenderPaint);
+            c.drawRect((float) pix.x - 2, mBarRect.bottom + Utils.convertDpToPixel(2), (float) pix.x + 2,
+                    mViewPortHandler.contentBottom() + Utils.convertDpToPixel(4), mRenderPaint);
         }
     }
 

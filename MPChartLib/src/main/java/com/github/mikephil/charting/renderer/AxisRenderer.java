@@ -35,6 +35,10 @@ public abstract class AxisRenderer extends Renderer {
     protected Paint mGridPaint;
 
     /**
+     * paint object for the grid delimiter
+     */
+    protected Paint mGridDelimiterPaint;
+    /**
      * paint for the x-label values
      */
     protected Paint mAxisLabelPaint;
@@ -64,6 +68,12 @@ public abstract class AxisRenderer extends Renderer {
             mGridPaint.setStrokeWidth(1f);
             mGridPaint.setStyle(Style.STROKE);
             mGridPaint.setAlpha(90);
+
+            mGridDelimiterPaint = new Paint();
+            mGridDelimiterPaint.setColor(Color.GRAY);
+            mGridDelimiterPaint.setStrokeWidth(1f);
+            mGridDelimiterPaint.setStyle(Style.STROKE);
+            mGridDelimiterPaint.setAlpha(90);
 
             mAxisLinePaint = new Paint();
             mAxisLinePaint.setColor(Color.BLACK);

@@ -169,18 +169,6 @@ public class XAxisRendererHorizontalBarChart extends XAxisRenderer {
     }
 
     @Override
-    protected void drawGridLine(Canvas c, float x, float y, Path gridLinePath) {
-
-        gridLinePath.moveTo(mViewPortHandler.contentRight(), y);
-        gridLinePath.lineTo(mViewPortHandler.contentLeft(), y);
-
-        // draw a path because lines don't support dashing on lower android versions
-        c.drawPath(gridLinePath, mGridPaint);
-
-        gridLinePath.reset();
-    }
-
-    @Override
     public void renderAxisLine(Canvas c) {
 
         if (!mXAxis.isDrawAxisLineEnabled() || !mXAxis.isEnabled())

@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
+import android.graphics.Path;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -51,6 +52,8 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<
      * (entry numbers greater than this value will cause value-labels to disappear)
      */
     protected int mMaxVisibleCount = 100;
+
+    protected Path containerLinesPath = new Path();
 
     /**
      * flag that indicates if auto scaling on the y axis is enabled
@@ -175,7 +178,7 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<
 
         mBorderPaint = new Paint();
         mBorderPaint.setStyle(Style.STROKE);
-        mBorderPaint.setColor(Color.BLACK);
+        mBorderPaint.setColor(Color.GRAY);
         mBorderPaint.setStrokeWidth(Utils.convertDpToPixel(1f));
     }
 
@@ -292,6 +295,21 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<
             Log.i(LOG_TAG, "Drawtime: " + drawtime + " ms, average: " + average + " ms, cycles: "
                     + drawCycles);
         }
+
+        drawContainerLineTop(canvas);
+    }
+
+    private void drawContainerLineTop(Canvas c) {
+        mBorderPaint.setColor(mXAxis.getGridColor());
+        mBorderPaint.setStrokeWidth(mXAxis.getGridLineWidth());
+        float top = mViewPortHandler.contentTop();
+        containerLinesPath.moveTo(mViewPortHandler.contentLeft(), top);
+        containerLinesPath.lineTo(mViewPortHandler.contentRight() + mViewPortHandler.offsetRight(), top);
+
+        // draw a path because lines don't support dashing on lower android versions
+        c.drawPath(containerLinesPath, mBorderPaint);
+
+        containerLinesPath.reset();
     }
 
     /**
@@ -542,6 +560,8 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<
         if (mDrawBorders) {
             c.drawRect(mViewPortHandler.getContentRect(), mBorderPaint);
         }
+
+//        c.drawLine();
     }
 
     /**

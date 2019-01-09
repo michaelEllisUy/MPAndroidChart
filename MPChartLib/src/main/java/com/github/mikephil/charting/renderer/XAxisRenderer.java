@@ -39,6 +39,11 @@ public class XAxisRenderer extends AxisRenderer {
         mGridPaint.setPathEffect(mXAxis.getGridDashPathEffect());
     }
 
+    protected void setupGridDelimeterPaint() {
+        mGridDelimiterPaint.setColor(mXAxis.getGridColor());
+        mGridDelimiterPaint.setStrokeWidth(mXAxis.getGridLineWidth());
+    }
+
     @Override
     public void computeAxis(float min, float max, boolean inverted) {
 
@@ -265,13 +270,24 @@ public class XAxisRenderer extends AxisRenderer {
         mTrans.pointValuesToPixel(positions);
 
         setupGridPaint();
+        setupGridDelimeterPaint();
 
         Path gridLinePath = mRenderGridLinesPath;
         gridLinePath.reset();
-
+        int lineNumber = 0;
+        int labelDistance = mAxis.getLabelDistance();
+        boolean drawTillEnd = false;
         for (int i = 0; i < positions.length; i += 2) {
-
-            drawGridLine(c, positions[i], positions[i + 1], gridLinePath);
+            if (lineNumber == 1 || lineNumber == positions.length / 2 - 1) {
+                drawContainerLine(c, gridLinePath, positions[i]);
+            } else {
+                if (labelDistance != -1 && (lineNumber % labelDistance) == 0) {
+                    drawTillEnd = true;
+                }
+                drawGridLine(c, positions[i], gridLinePath, drawTillEnd);
+                drawTillEnd = false;
+            }
+            lineNumber++;
         }
 
         c.restoreToCount(clipRestoreCount);
@@ -282,6 +298,7 @@ public class XAxisRenderer extends AxisRenderer {
     public RectF getGridClippingRect() {
         mGridClippingRect.set(mViewPortHandler.getContentRect());
         mGridClippingRect.inset(-mAxis.getGridLineWidth(), 0.f);
+        mGridClippingRect.bottom += mViewPortHandler.offsetBottom();
         return mGridClippingRect;
     }
 
@@ -290,16 +307,32 @@ public class XAxisRenderer extends AxisRenderer {
      *
      * @param c
      * @param x
-     * @param y
      * @param gridLinePath
      */
-    protected void drawGridLine(Canvas c, float x, float y, Path gridLinePath) {
+    protected void drawGridLine(Canvas c, float x, Path gridLinePath, boolean drawTillEnd) {
+        float lineEnd;
+        if (drawTillEnd) {
+            lineEnd = mViewPortHandler.contentBottom() + mViewPortHandler.offsetBottom();
+        } else {
+            lineEnd = mViewPortHandler.contentBottom() + Utils.convertDpToPixel(4);
+        }
 
-        gridLinePath.moveTo(x, mViewPortHandler.contentBottom());
+        gridLinePath.moveTo(x, lineEnd);
         gridLinePath.lineTo(x, mViewPortHandler.contentTop());
 
         // draw a path because lines don't support dashing on lower android versions
         c.drawPath(gridLinePath, mGridPaint);
+
+        gridLinePath.reset();
+    }
+
+    private void drawContainerLine(Canvas c, Path gridLinePath, float lineX) {
+        float lineEnd = mViewPortHandler.contentBottom() + mViewPortHandler.offsetBottom();
+        gridLinePath.moveTo(lineX, lineEnd);
+        gridLinePath.lineTo(lineX, mViewPortHandler.contentTop());
+
+        // draw a path because lines don't support dashing on lower android versions
+        c.drawPath(gridLinePath, mGridDelimiterPaint);
 
         gridLinePath.reset();
     }

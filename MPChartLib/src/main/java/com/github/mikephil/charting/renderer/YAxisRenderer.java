@@ -29,7 +29,7 @@ public class YAxisRenderer extends AxisRenderer {
 
         this.mYAxis = yAxis;
 
-        if(mViewPortHandler != null) {
+        if (mViewPortHandler != null) {
 
             mAxisLabelPaint.setColor(Color.BLACK);
             mAxisLabelPaint.setTextSize(Utils.convertDpToPixel(10f));
@@ -96,14 +96,6 @@ public class YAxisRenderer extends AxisRenderer {
 
         mAxisLinePaint.setColor(mYAxis.getAxisLineColor());
         mAxisLinePaint.setStrokeWidth(mYAxis.getAxisLineWidth());
-
-        if (mYAxis.getAxisDependency() == AxisDependency.LEFT) {
-            c.drawLine(mViewPortHandler.contentLeft(), mViewPortHandler.contentTop(), mViewPortHandler.contentLeft(),
-                    mViewPortHandler.contentBottom(), mAxisLinePaint);
-        } else {
-            c.drawLine(mViewPortHandler.contentRight(), mViewPortHandler.contentTop(), mViewPortHandler.contentRight(),
-                    mViewPortHandler.contentBottom(), mAxisLinePaint);
-        }
     }
 
     /**
@@ -129,6 +121,7 @@ public class YAxisRenderer extends AxisRenderer {
     }
 
     protected Path mRenderGridLinesPath = new Path();
+
     @Override
     public void renderGridLines(Canvas c) {
 
@@ -190,6 +183,7 @@ public class YAxisRenderer extends AxisRenderer {
     }
 
     protected float[] mGetTransformedPositionsBuffer = new float[2];
+
     /**
      * Transforms the values contained in the axis entries to screen pixels and returns them in form of a float array
      * of x- and y-coordinates.
@@ -198,7 +192,7 @@ public class YAxisRenderer extends AxisRenderer {
      */
     protected float[] getTransformedPositions() {
 
-        if(mGetTransformedPositionsBuffer.length != mYAxis.mEntryCount * 2){
+        if (mGetTransformedPositionsBuffer.length != mYAxis.mEntryCount * 2) {
             mGetTransformedPositionsBuffer = new float[mYAxis.mEntryCount * 2];
         }
         float[] positions = mGetTransformedPositionsBuffer;
@@ -246,6 +240,7 @@ public class YAxisRenderer extends AxisRenderer {
     protected Path mRenderLimitLines = new Path();
     protected float[] mRenderLimitLinesBuffer = new float[2];
     protected RectF mLimitLineClippingRect = new RectF();
+
     /**
      * Draws the LimitLines associated with this axis to the screen.
      *

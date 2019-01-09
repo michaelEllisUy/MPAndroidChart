@@ -411,6 +411,7 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
         // super.onDraw(canvas);
         getParent().requestDisallowInterceptTouchEvent(true);
         drawTitle(canvas);
+        drawTopLine(canvas);
         if (mData == null) {
 
             boolean hasText = !TextUtils.isEmpty(mNoDataText);
@@ -431,6 +432,10 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
     }
 
     private void drawTitle(Canvas c) {
+
+    }
+
+    private void drawTopLine(Canvas c) {
         if (getData() != null && getData().getTitle() != null) {
             float containerStartY = mViewPortHandler.contentTop() / 4;
             float containerEndY = mViewPortHandler.contentTop() * 3 / 4;
