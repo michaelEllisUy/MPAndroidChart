@@ -16,14 +16,19 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore.Images;
+
 import androidx.annotation.RequiresApi;
+
+import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
+import com.github.mikephil.charting.R;
 import com.github.mikephil.charting.animation.ChartAnimator;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.animation.Easing.EasingFunction;
@@ -111,6 +116,11 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
      * the chart
      */
     protected Paint mInfoPaint;
+
+    /**
+     * paint object for drawing the title text in the chart
+     */
+    private TextPaint titleTextPaint;
 
     /**
      * the object representing the labels on the x-axis
@@ -235,6 +245,12 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
         mInfoPaint.setTextAlign(Align.CENTER);
         mInfoPaint.setTextSize(Utils.convertDpToPixel(12f));
 
+        titleTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
+
+        titleTextPaint.setTextAlign(Paint.Align.LEFT);
+        titleTextPaint.setColor(Color.GRAY);
+        titleTextPaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+
         if (mLogEnabled)
             Log.i("", "Chart.init()");
     }
@@ -282,6 +298,7 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
     public void setData(T data) {
 
         mData = data;
+        titleTextPaint.setTextSize(mData.getTitleTextSize());
         mOffsetsCalculated = false;
 
         if (data == null) {
@@ -393,6 +410,7 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
     protected void onDraw(Canvas canvas) {
         // super.onDraw(canvas);
         getParent().requestDisallowInterceptTouchEvent(true);
+        drawTitle(canvas);
         if (mData == null) {
 
             boolean hasText = !TextUtils.isEmpty(mNoDataText);
@@ -409,6 +427,23 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
 
             calculateOffsets();
             mOffsetsCalculated = true;
+        }
+    }
+
+    private void drawTitle(Canvas c) {
+        if (getData() != null && getData().getTitle() != null) {
+            float containerStartY = mViewPortHandler.contentTop() / 4;
+            float containerEndY = mViewPortHandler.contentTop() * 3 / 4;
+            float containerCenter = mViewPortHandler.contentLeft() + (mViewPortHandler.contentRight() - mViewPortHandler.contentLeft()) / 2;
+            String title = getData().getTitle();
+            float titleMeasurement = titleTextPaint.measureText(title);
+            float titleStartX = containerCenter - titleMeasurement / 2;
+            float textY = (containerEndY - containerStartY
+                    - mData.getTitleTextSize()) / 2 + containerStartY + mData.getTitleTextSize();
+            c.drawText(title,
+                    titleStartX,
+                    textY - titleTextPaint.descent(),
+                    titleTextPaint);
         }
     }
 
@@ -552,7 +587,8 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
      * Highlights any y-value at the given x-value in the given DataSet.
      * Provide -1 as the dataSetIndex to undo all highlighting.
      * This method will call the listener.
-     * @param x The x-value to highlight
+     *
+     * @param x            The x-value to highlight
      * @param dataSetIndex The dataset index to search in
      */
     public void highlightValue(float x, int dataSetIndex) {
@@ -563,8 +599,9 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
      * Highlights the value at the given x-value and y-value in the given DataSet.
      * Provide -1 as the dataSetIndex to undo all highlighting.
      * This method will call the listener.
-     * @param x The x-value to highlight
-     * @param y The y-value to highlight. Supply `NaN` for "any"
+     *
+     * @param x            The x-value to highlight
+     * @param y            The y-value to highlight. Supply `NaN` for "any"
      * @param dataSetIndex The dataset index to search in
      */
     public void highlightValue(float x, float y, int dataSetIndex) {
@@ -574,7 +611,8 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
     /**
      * Highlights any y-value at the given x-value in the given DataSet.
      * Provide -1 as the dataSetIndex to undo all highlighting.
-     * @param x The x-value to highlight
+     *
+     * @param x            The x-value to highlight
      * @param dataSetIndex The dataset index to search in
      * @param callListener Should the listener be called for this change
      */
@@ -585,8 +623,9 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
     /**
      * Highlights any y-value at the given x-value in the given DataSet.
      * Provide -1 as the dataSetIndex to undo all highlighting.
-     * @param x The x-value to highlight
-     * @param y The y-value to highlight. Supply `NaN` for "any"
+     *
+     * @param x            The x-value to highlight
+     * @param y            The y-value to highlight. Supply `NaN` for "any"
      * @param dataSetIndex The dataset index to search in
      * @param callListener Should the listener be called for this change
      */
@@ -846,7 +885,7 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
      *
      * @param durationMillisX
      * @param durationMillisY
-     * @param easing         a custom easing function to be used on the animation phase
+     * @param easing          a custom easing function to be used on the animation phase
      */
     @RequiresApi(11)
     public void animateXY(int durationMillisX, int durationMillisY, EasingFunction easing) {
@@ -1467,7 +1506,6 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
      * @return returns true on success, false on error
      */
     public boolean saveToPath(String title, String pathOnSD) {
-
 
 
         Bitmap b = getChartBitmap();

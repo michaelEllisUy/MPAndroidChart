@@ -11,6 +11,8 @@ import com.github.mikephil.charting.interfaces.datasets.IDataSet;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+
 /**
  * Class that holds all relevant data that represents the chart. That involves
  * at least one (or more) DataSets, and an array of x-values.
@@ -47,6 +49,13 @@ public abstract class ChartData<T extends IDataSet<? extends Entry>> {
     protected float mRightAxisMax = -Float.MAX_VALUE;
 
     protected float mRightAxisMin = Float.MAX_VALUE;
+
+    protected String title = "";
+
+    /**
+     * size of the text title
+     */
+    private int titleTextSize = 55;
 
     /**
      * array that holds all DataSets the ChartData object represents
@@ -666,6 +675,33 @@ public abstract class ChartData<T extends IDataSet<? extends Entry>> {
                 set.setValueFormatter(f);
             }
         }
+    }
+
+
+    /**
+     * Sets a custom Title for the chart
+     *
+     * @param title to draw
+     */
+    public void setTitle(@NonNull String title) {
+        this.title = title;
+    }
+
+    public String getTitle() {
+        return this.title;
+    }
+
+    /**
+     * Sets a custom Title size for the chart title
+     *
+     * @param titleTextSize to draw
+     */
+    public void setTitleTextSize(int titleTextSize) {
+        this.titleTextSize = titleTextSize;
+    }
+
+    public int getTitleTextSize() {
+        return this.titleTextSize;
     }
 
     /**

@@ -164,6 +164,7 @@ public class StackedBarActivity extends DemoBase implements OnSeekBarChangeListe
             BarData data = new BarData(dataSets);
             data.setValueFormatter(new StackedValueFormatter(false, "", 0));
             data.setValueTextColor(Color.WHITE);
+            data.setTitle("Jan 10, 2019");
 
             chart.setData(data);
         }
