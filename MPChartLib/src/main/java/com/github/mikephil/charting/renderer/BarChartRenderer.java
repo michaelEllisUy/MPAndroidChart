@@ -487,6 +487,8 @@ public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
         float containerStartY = mViewPortHandler.contentTop() / 4;
         float containerEndY = mViewPortHandler.contentTop() * 3 / 4;
 
+        deleteTitle(c, containerEndY);
+
         c.drawRoundRect(left,
                 containerStartY,
                 right,
@@ -496,6 +498,11 @@ public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
                 mRenderPaint);
 
         drawDescription(c, first, second, third, left, containerStartY, containerEndY);
+    }
+
+    private void deleteTitle(Canvas c, float containerEndY) {
+        c.drawRect(mViewPortHandler.contentLeft(), 0, mViewPortHandler.contentRight(),
+                containerEndY, mBlankPaint);
     }
 
     private void drawDescription(Canvas c, @NonNull String first, @NonNull String second, @Nullable String third, float left,

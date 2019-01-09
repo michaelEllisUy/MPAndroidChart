@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Path;
 import android.graphics.RectF;
+import android.text.TextPaint;
 
 import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.components.XAxis;
@@ -22,6 +23,7 @@ import java.util.List;
 public class XAxisRenderer extends AxisRenderer {
 
     protected XAxis mXAxis;
+    protected Paint mAxisDistanceLabelPaint;
 
     public XAxisRenderer(ViewPortHandler viewPortHandler, XAxis xAxis, Transformer trans) {
         super(viewPortHandler, trans, xAxis);
@@ -31,6 +33,11 @@ public class XAxisRenderer extends AxisRenderer {
         mAxisLabelPaint.setColor(Color.BLACK);
         mAxisLabelPaint.setTextAlign(Align.CENTER);
         mAxisLabelPaint.setTextSize(Utils.convertDpToPixel(10f));
+        mAxisDistanceLabelPaint = new TextPaint();
+        mAxisDistanceLabelPaint.setColor(mAxisLabelPaint.getColor());
+        mAxisDistanceLabelPaint.setStyle(mAxisLabelPaint.getStyle());
+        mAxisDistanceLabelPaint.setTextSize(mAxisLabelPaint.getTextSize());
+        mAxisDistanceLabelPaint.setTextAlign(Align.LEFT);
     }
 
     protected void setupGridPaint() {
@@ -182,51 +189,52 @@ public class XAxisRenderer extends AxisRenderer {
      * @param pos
      */
     protected void drawLabels(Canvas c, float pos, MPPointF anchor) {
+        if (mAxis.getLabelDistance() == -1) {
+            final float labelRotationAngleDegrees = mXAxis.getLabelRotationAngle();
+            boolean centeringEnabled = mXAxis.isCenterAxisLabelsEnabled();
 
-        final float labelRotationAngleDegrees = mXAxis.getLabelRotationAngle();
-        boolean centeringEnabled = mXAxis.isCenterAxisLabelsEnabled();
+            float[] positions = new float[mXAxis.mEntryCount * 2];
 
-        float[] positions = new float[mXAxis.mEntryCount * 2];
+            for (int i = 0; i < positions.length; i += 2) {
 
-        for (int i = 0; i < positions.length; i += 2) {
-
-            // only fill x values
-            if (centeringEnabled) {
-                positions[i] = mXAxis.mCenteredEntries[i / 2];
-            } else {
-                positions[i] = mXAxis.mEntries[i / 2];
-            }
-        }
-
-        mTrans.pointValuesToPixel(positions);
-
-        for (int i = 0; i < positions.length; i += 2) {
-
-            float x = positions[i];
-
-            if (mViewPortHandler.isInBoundsX(x)) {
-
-                String label = mXAxis.getValueFormatter().getAxisLabel(mXAxis.mEntries[i / 2], mXAxis);
-
-                if (mXAxis.isAvoidFirstLastClippingEnabled()) {
-
-                    // avoid clipping of the last
-                    if (i / 2 == mXAxis.mEntryCount - 1 && mXAxis.mEntryCount > 1) {
-                        float width = Utils.calcTextWidth(mAxisLabelPaint, label);
-
-                        if (width > mViewPortHandler.offsetRight() * 2
-                                && x + width > mViewPortHandler.getChartWidth())
-                            x -= width / 2;
-
-                        // avoid clipping of the first
-                    } else if (i == 0) {
-
-                        float width = Utils.calcTextWidth(mAxisLabelPaint, label);
-                        x += width / 2;
-                    }
+                // only fill x values
+                if (centeringEnabled) {
+                    positions[i] = mXAxis.mCenteredEntries[i / 2];
+                } else {
+                    positions[i] = mXAxis.mEntries[i / 2];
                 }
+            }
 
-                drawLabel(c, label, x, pos, anchor, labelRotationAngleDegrees);
+            mTrans.pointValuesToPixel(positions);
+
+            for (int i = 0; i < positions.length; i += 2) {
+
+                float x = positions[i];
+
+                if (mViewPortHandler.isInBoundsX(x)) {
+
+                    String label = mXAxis.getValueFormatter().getAxisLabel(mXAxis.mEntries[i / 2], mXAxis);
+
+                    if (mXAxis.isAvoidFirstLastClippingEnabled()) {
+
+                        // avoid clipping of the last
+                        if (i / 2 == mXAxis.mEntryCount - 1 && mXAxis.mEntryCount > 1) {
+                            float width = Utils.calcTextWidth(mAxisLabelPaint, label);
+
+                            if (width > mViewPortHandler.offsetRight() * 2
+                                    && x + width > mViewPortHandler.getChartWidth())
+                                x -= width / 2;
+
+                            // avoid clipping of the first
+                        } else if (i == 0) {
+
+                            float width = Utils.calcTextWidth(mAxisLabelPaint, label);
+                            x += width / 2;
+                        }
+                    }
+
+                    drawLabel(c, label, x, pos, anchor, labelRotationAngleDegrees);
+                }
             }
         }
     }
@@ -275,14 +283,23 @@ public class XAxisRenderer extends AxisRenderer {
         Path gridLinePath = mRenderGridLinesPath;
         gridLinePath.reset();
         int lineNumber = 0;
+        int labelNumber = 0;
         int labelDistance = mAxis.getLabelDistance();
         boolean drawTillEnd = false;
         for (int i = 0; i < positions.length; i += 2) {
-            if (lineNumber == 1 || lineNumber == positions.length / 2 - 1) {
+            if (lineNumber == mAxis.getLabelStart() || lineNumber == positions.length / 2 - 1) {
                 drawContainerLine(c, gridLinePath, positions[i]);
+                if (labelNumber < mXAxis.mEntries.length) {
+                    drawLabel(c, positions[i], mXAxis.mEntries[labelNumber]);
+                    labelNumber++;
+                }
             } else {
                 if (labelDistance != -1 && (lineNumber % labelDistance) == 0) {
                     drawTillEnd = true;
+                    if (labelNumber < mXAxis.mEntries.length && lineNumber > mAxis.getLabelStart()) {
+                        drawLabel(c, positions[i], mXAxis.mEntries[labelNumber]);
+                        labelNumber++;
+                    }
                 }
                 drawGridLine(c, positions[i], gridLinePath, drawTillEnd);
                 drawTillEnd = false;
@@ -291,6 +308,13 @@ public class XAxisRenderer extends AxisRenderer {
         }
 
         c.restoreToCount(clipRestoreCount);
+    }
+
+    private void drawLabel(Canvas c, float position, float mEntry) {
+        String label = mXAxis.getValueFormatter().getAxisLabel(mEntry, mXAxis);
+        c.drawText(label, position + Utils.convertDpToPixel(2),
+                mViewPortHandler.contentBottom() + mViewPortHandler.offsetBottom() - Utils.convertDpToPixel(2),
+                mAxisDistanceLabelPaint);
     }
 
     protected RectF mGridClippingRect = new RectF();

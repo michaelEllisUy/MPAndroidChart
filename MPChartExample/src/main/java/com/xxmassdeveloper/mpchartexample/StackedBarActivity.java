@@ -65,7 +65,7 @@ public class StackedBarActivity extends DemoBase implements OnSeekBarChangeListe
 
         chart = findViewById(R.id.chart1);
         chart.setOnChartValueSelectedListener(this);
-
+        chart.setBackgroundColor(Color.WHITE);
         chart.getDescription().setEnabled(false);
 
         // if more than 60 entries are displayed in the chart, no values will be
@@ -132,8 +132,8 @@ public class StackedBarActivity extends DemoBase implements OnSeekBarChangeListe
             float val4 = 70;
 
             List<Triplet> tripletList = new ArrayList<>();
-            tripletList.add(new Triplet("3:30 AM", "Upper Body Workout", String.format("%d - %d bpm", (int) val1, (int) val2)));
-            tripletList.add(new Triplet("3:30 AM", "Upper Body Workout", String.format("%d - %d bpm", (int) val3, (int) val4)));
+            tripletList.add(new Triplet("3:30 AM", "U"));
+            tripletList.add(new Triplet("3:30 AM", "Upper Body Workout"));
 
             values.add(new BarEntry(
                     i,
