@@ -312,9 +312,13 @@ public class XAxisRenderer extends AxisRenderer {
 
     private void drawLabel(Canvas c, float position, float mEntry) {
         String label = mXAxis.getValueFormatter().getAxisLabel(mEntry, mXAxis);
-        c.drawText(label, position + Utils.convertDpToPixel(2),
-                mViewPortHandler.contentBottom() + mViewPortHandler.offsetBottom() - Utils.convertDpToPixel(2),
-                mAxisDistanceLabelPaint);
+        float startingX = position + Utils.convertDpToPixel(2);
+        
+        if (mAxisDistanceLabelPaint.measureText(label) + startingX < mViewPortHandler.contentRight()) {
+            c.drawText(label, startingX,
+                    mViewPortHandler.contentBottom() + mViewPortHandler.offsetBottom() - Utils.convertDpToPixel(2),
+                    mAxisDistanceLabelPaint);
+        }
     }
 
     protected RectF mGridClippingRect = new RectF();
