@@ -20,6 +20,8 @@ import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import java.util.List;
 
+import androidx.annotation.NonNull;
+
 public class XAxisRenderer extends AxisRenderer {
 
     protected XAxis mXAxis;
@@ -290,14 +292,23 @@ public class XAxisRenderer extends AxisRenderer {
             if (lineNumber == mAxis.getLabelStart() || lineNumber == positions.length / 2 - 1) {
                 drawContainerLine(c, gridLinePath, positions[i]);
                 if (labelNumber < mXAxis.mEntries.length) {
-                    drawLabel(c, positions[i], mXAxis.mEntries[labelNumber]);
+                    String label = getLabelForEntry(mXAxis.mEntries[labelNumber]);
+                    float startingX = positions[i] + Utils.convertDpToPixel(2);
+                    drawLabel(c, startingX, label);
                     labelNumber++;
                 }
             } else {
                 if (labelDistance != -1 && (lineNumber % labelDistance) == 0) {
                     drawTillEnd = true;
                     if (labelNumber < mXAxis.mEntries.length && lineNumber > mAxis.getLabelStart()) {
-                        drawLabel(c, positions[i], mXAxis.mEntries[labelNumber]);
+                        String label = getLabelForEntry(mXAxis.mEntries[labelNumber]);
+                        float startingX = positions[i] + Utils.convertDpToPixel(2);
+                        if (labelNumber != mXAxis.mEntries.length - 1
+                                || i + 4 != positions.length
+                                || startingX + mAxisDistanceLabelPaint.measureText(label) < positions[i + 2]
+                                ) {
+                            drawLabel(c, startingX, label);
+                        }
                         labelNumber++;
                     }
                 }
@@ -310,10 +321,11 @@ public class XAxisRenderer extends AxisRenderer {
         c.restoreToCount(clipRestoreCount);
     }
 
-    private void drawLabel(Canvas c, float position, float mEntry) {
-        String label = mXAxis.getValueFormatter().getAxisLabel(mEntry, mXAxis);
-        float startingX = position + Utils.convertDpToPixel(2);
-        
+    private String getLabelForEntry(float mEntry) {
+        return mXAxis.getValueFormatter().getAxisLabel(mEntry, mXAxis);
+    }
+
+    private void drawLabel(Canvas c, float startingX, @NonNull String label) {
         if (mAxisDistanceLabelPaint.measureText(label) + startingX < mViewPortHandler.contentRight()) {
             c.drawText(label, startingX,
                     mViewPortHandler.contentBottom() + mViewPortHandler.offsetBottom() - Utils.convertDpToPixel(2),
