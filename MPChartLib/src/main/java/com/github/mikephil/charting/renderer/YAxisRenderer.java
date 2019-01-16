@@ -148,6 +148,9 @@ public class YAxisRenderer extends AxisRenderer {
                 gridLinePath.reset();
             }
 
+            float yPsotion = mViewPortHandler.contentBottom();
+            c.drawPath(linePath(gridLinePath, yPsotion, yPsotion), mGridPaint);
+
             c.restoreToCount(clipRestoreCount);
         }
 
@@ -175,8 +178,12 @@ public class YAxisRenderer extends AxisRenderer {
      * @return
      */
     protected Path linePath(Path p, int i, float[] positions) {
-        p.moveTo(0, positions[i + 1]);
-        p.lineTo(mViewPortHandler.contentRight(), positions[i + 1]);
+        return linePath(p, positions[i + 1], positions[i + 1]);
+    }
+
+    protected Path linePath(Path p, float yStart, float yEnd) {
+        p.moveTo(0, yStart);
+        p.lineTo(mViewPortHandler.contentRight(), yEnd);
         return p;
     }
 
