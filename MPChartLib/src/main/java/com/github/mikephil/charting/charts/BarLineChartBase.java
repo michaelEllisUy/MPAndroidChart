@@ -303,7 +303,7 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<
         mBorderPaint.setColor(mXAxis.getGridColor());
         mBorderPaint.setStrokeWidth(mXAxis.getGridLineWidth());
         float top = mViewPortHandler.contentTop();
-        containerLinesPath.moveTo(mViewPortHandler.contentLeft(), top);
+        containerLinesPath.moveTo(0, top);
         containerLinesPath.lineTo(mViewPortHandler.contentRight() + mViewPortHandler.offsetRight(), top);
 
         // draw a path because lines don't support dashing on lower android versions

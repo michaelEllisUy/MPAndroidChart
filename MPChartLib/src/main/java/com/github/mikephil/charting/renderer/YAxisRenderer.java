@@ -124,7 +124,6 @@ public class YAxisRenderer extends AxisRenderer {
 
     @Override
     public void renderGridLines(Canvas c) {
-
         if (!mYAxis.isEnabled())
             return;
 
@@ -144,7 +143,6 @@ public class YAxisRenderer extends AxisRenderer {
 
             // draw the grid
             for (int i = 0; i < positions.length; i += 2) {
-
                 // draw a path because lines don't support dashing on lower android versions
                 c.drawPath(linePath(gridLinePath, i, positions), mGridPaint);
                 gridLinePath.reset();
@@ -161,7 +159,9 @@ public class YAxisRenderer extends AxisRenderer {
     protected RectF mGridClippingRect = new RectF();
 
     public RectF getGridClippingRect() {
-        mGridClippingRect.set(mViewPortHandler.getContentRect());
+        mGridClippingRect.set(0, mViewPortHandler.contentTop(),
+                mViewPortHandler.contentRight() + mViewPortHandler.offsetRight(),
+                mViewPortHandler.contentBottom());
         mGridClippingRect.inset(0.f, -mAxis.getGridLineWidth());
         return mGridClippingRect;
     }
@@ -175,10 +175,8 @@ public class YAxisRenderer extends AxisRenderer {
      * @return
      */
     protected Path linePath(Path p, int i, float[] positions) {
-
-        p.moveTo(mViewPortHandler.offsetLeft(), positions[i + 1]);
+        p.moveTo(0, positions[i + 1]);
         p.lineTo(mViewPortHandler.contentRight(), positions[i + 1]);
-
         return p;
     }
 
