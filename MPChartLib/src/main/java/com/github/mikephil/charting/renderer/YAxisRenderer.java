@@ -118,6 +118,20 @@ public class YAxisRenderer extends AxisRenderer {
 
             c.drawText(text, fixedPosition, positions[i * 2 + 1] + offset, mAxisLabelPaint);
         }
+
+        if (positions[from * 2 + 1] + offset < mViewPortHandler.contentBottom()) {
+            drawFullBottomLine(c);
+        }
+
+    }
+
+    private void drawFullBottomLine(Canvas c) {
+        float yPsotion = mViewPortHandler.contentBottom();
+        Path gridLinePath = mRenderGridLinesPath;
+        gridLinePath.reset();
+        gridLinePath.moveTo(0, yPsotion);
+        gridLinePath.lineTo(mViewPortHandler.contentRight() + mViewPortHandler.offsetRight(), yPsotion);
+        c.drawPath(linePath(gridLinePath, yPsotion, yPsotion), mGridPaint);
     }
 
     protected Path mRenderGridLinesPath = new Path();
@@ -147,9 +161,6 @@ public class YAxisRenderer extends AxisRenderer {
                 c.drawPath(linePath(gridLinePath, i, positions), mGridPaint);
                 gridLinePath.reset();
             }
-
-            float yPsotion = mViewPortHandler.contentBottom();
-            c.drawPath(linePath(gridLinePath, yPsotion, yPsotion), mGridPaint);
 
             c.restoreToCount(clipRestoreCount);
         }
