@@ -95,6 +95,7 @@ public class StackedBarActivity extends DemoBase implements OnSeekBarChangeListe
         xLabels.enableGridDashedLine(20, 10, 0);
         xLabels.setLabelDistance(7);
         xLabels.setLabelStart(1);
+        xLabels.setDrawAxisLine(false);
         xLabels.setPosition(XAxisPosition.BOTTOM);
         // chart.setDrawXLabels(false);
         // chart.setDrawYLabels(false);
@@ -113,7 +114,7 @@ public class StackedBarActivity extends DemoBase implements OnSeekBarChangeListe
 
         chart.setRectangledBars(false);
 
-        chart.animateY(1500, Easing.EaseInOutCubic);
+        chart.animateY(250, Easing.EaseInOutCubic);
         // chart.setDrawLegend(false);
     }
 
@@ -126,10 +127,10 @@ public class StackedBarActivity extends DemoBase implements OnSeekBarChangeListe
         ArrayList<BarEntry> values = new ArrayList<>();
 
         for (int i = 1; i < 24; i++) {
-            float val1 = 55;
+            float val1 = 45;
             float val2 = 57;
             float val3 = 70;
-            float val4 = 90;
+            float val4 = 160;
 
             List<Triplet> tripletList = new ArrayList<>();
             tripletList.add(new Triplet("3:30 AM", "U"));

@@ -295,21 +295,6 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<
             Log.i(LOG_TAG, "Drawtime: " + drawtime + " ms, average: " + average + " ms, cycles: "
                     + drawCycles);
         }
-
-        drawContainerLineTop(canvas);
-    }
-
-    private void drawContainerLineTop(Canvas c) {
-        mBorderPaint.setColor(mXAxis.getGridColor());
-        mBorderPaint.setStrokeWidth(mXAxis.getGridLineWidth());
-        float top = mViewPortHandler.contentTop();
-        containerLinesPath.moveTo(0, top);
-        containerLinesPath.lineTo(mViewPortHandler.contentRight() + mViewPortHandler.offsetRight(), top);
-
-        // draw a path because lines don't support dashing on lower android versions
-        c.drawPath(containerLinesPath, mBorderPaint);
-
-        containerLinesPath.reset();
     }
 
     /**

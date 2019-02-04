@@ -105,7 +105,6 @@ public class YAxisRenderer extends AxisRenderer {
      * @param positions
      */
     protected void drawYLabels(Canvas c, float fixedPosition, float[] positions, float offset) {
-
         final int from = mYAxis.isDrawBottomYLabelEntryEnabled() ? 0 : 1;
         final int to = mYAxis.isDrawTopYLabelEntryEnabled()
                 ? mYAxis.mEntryCount
@@ -120,17 +119,20 @@ public class YAxisRenderer extends AxisRenderer {
         }
 
         if (positions[from * 2 + 1] + offset < mViewPortHandler.contentBottom()) {
-            drawFullBottomLine(c);
+            drawFullLine(c, mViewPortHandler.contentBottom());
+        }
+
+        if (positions[(to - 1) * 2 + 1] + offset - mAxisLabelPaint.getTextSize() > mViewPortHandler.contentTop()) {
+            drawFullLine(c, mViewPortHandler.contentTop());
         }
     }
 
-    private void drawFullBottomLine(Canvas c) {
-        float yPsotion = mViewPortHandler.contentBottom();
+    private void drawFullLine(Canvas c, float yPosition) {
         Path gridLinePath = mRenderGridLinesPath;
         gridLinePath.reset();
-        gridLinePath.moveTo(0, yPsotion);
-        gridLinePath.lineTo(mViewPortHandler.contentRight() + mViewPortHandler.offsetRight(), yPsotion);
-        c.drawPath(linePath(gridLinePath, yPsotion, yPsotion), mGridPaint);
+        gridLinePath.moveTo(0, yPosition);
+        gridLinePath.lineTo(mViewPortHandler.contentRight() + mViewPortHandler.offsetRight(), yPosition);
+        c.drawPath(linePath(gridLinePath, yPosition, yPosition), mGridPaint);
     }
 
     protected Path mRenderGridLinesPath = new Path();
