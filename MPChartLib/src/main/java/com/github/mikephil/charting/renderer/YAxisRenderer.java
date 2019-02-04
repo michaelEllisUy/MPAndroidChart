@@ -122,7 +122,6 @@ public class YAxisRenderer extends AxisRenderer {
         if (positions[from * 2 + 1] + offset < mViewPortHandler.contentBottom()) {
             drawFullBottomLine(c);
         }
-
     }
 
     private void drawFullBottomLine(Canvas c) {

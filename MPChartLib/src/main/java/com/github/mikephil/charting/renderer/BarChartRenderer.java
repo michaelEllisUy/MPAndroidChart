@@ -215,19 +215,20 @@ public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
                                 android.graphics.Shader.TileMode.MIRROR));
             }
 
+            float left = buffer.buffer[j] + 4;
+            float right = buffer.buffer[j + 2] - 4;
+            float top = buffer.buffer[j + 1];
+            float bottom = buffer.buffer[j + 3];
             if (mChart.areBarsRectangles()) {
-                c.drawRect(buffer.buffer[j] + 4, buffer.buffer[j + 1], buffer.buffer[j + 2] - 4,
-                        buffer.buffer[j + 3], mRenderPaint);
+                c.drawRect(left, top, right, bottom, mRenderPaint);
             } else {
-                float top = buffer.buffer[j + 1];
-                float bottom = buffer.buffer[j + 3];
-                if (top != bottom) {
-                    c.drawRoundRect(buffer.buffer[j] + 4, top, buffer.buffer[j + 2] - 4,
-                            bottom, BAR_RADIUS, BAR_RADIUS, mRenderPaint);
+                if (top != bottom && bottom - top  > right - left) {
+                    c.drawRoundRect(left, top, right, bottom, BAR_RADIUS, BAR_RADIUS, mRenderPaint);
                 } else if (top != 0) {
-                    float left = buffer.buffer[j];
-                    float right = buffer.buffer[j + 2];
-                    c.drawCircle(left + (right - left) / 2, top, (right - left) / 2 - 2, mRenderPaint);
+                    float leftOfCircle = buffer.buffer[j];
+                    float rightOfCircle = buffer.buffer[j + 2];
+                    c.drawCircle(leftOfCircle + (rightOfCircle - leftOfCircle) / 2, top,
+                            (rightOfCircle - leftOfCircle) / 2 - 2, mRenderPaint);
                 }
             }
 
