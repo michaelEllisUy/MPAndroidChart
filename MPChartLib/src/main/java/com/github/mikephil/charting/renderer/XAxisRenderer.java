@@ -288,12 +288,12 @@ public class XAxisRenderer extends AxisRenderer {
         int labelNumber = 0;
         int labelDistance = mAxis.getLabelDistance();
         boolean drawTillEnd = false;
-        
+
         for (int i = 0; i < positions.length; i += 2) {
             if (lineNumber == mAxis.getLabelStart() || lineNumber == positions.length / 2 - 1) {
                 drawContainerLine(c, gridLinePath, positions[i]);
                 if (labelNumber < mXAxis.mEntries.length) {
-                    String label = getLabelForEntry(mXAxis.mEntries[labelNumber] + Math.round(mAxis.getAxisMinimum()));
+                    String label = getLabelForEntry(mXAxis.mEntries[labelNumber] + (int) Math.floor(mAxis.getAxisMinimum()));
                     float startingX = positions[i] + Utils.convertDpToPixel(2);
                     drawLabel(c, startingX, label);
                     labelNumber++;
@@ -302,7 +302,7 @@ public class XAxisRenderer extends AxisRenderer {
                 if (labelDistance != -1 && (lineNumber % labelDistance) == 0) {
                     drawTillEnd = true;
                     if (labelNumber < mXAxis.mEntries.length && lineNumber > mAxis.getLabelStart()) {
-                        String label = getLabelForEntry(mXAxis.mEntries[labelNumber] + Math.round(mAxis.getAxisMinimum()));
+                        String label = getLabelForEntry(mXAxis.mEntries[labelNumber] + (int) Math.floor(mAxis.getAxisMinimum()));
                         float startingX = positions[i] + Utils.convertDpToPixel(2);
                         if (labelNumber != mXAxis.mEntries.length - 1
                                 || i + 4 != positions.length
