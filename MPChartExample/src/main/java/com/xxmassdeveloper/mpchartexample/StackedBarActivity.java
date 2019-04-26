@@ -39,6 +39,7 @@ import com.xxmassdeveloper.mpchartexample.notimportant.DemoBase;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class StackedBarActivity extends DemoBase implements OnSeekBarChangeListener, OnChartValueSelectedListener {
 
@@ -94,7 +95,7 @@ public class StackedBarActivity extends DemoBase implements OnSeekBarChangeListe
         xLabels.setOneGridLinePerUnit(true);
         xLabels.enableGridDashedLine(20, 10, 0);
         xLabels.setLabelDistance(3);
-        xLabels.setLabelStart(1);
+        xLabels.setLabelStart(0);
         xLabels.setDrawAxisLine(false);
         xLabels.setPosition(XAxisPosition.BOTTOM);
         // chart.setDrawXLabels(false);
@@ -133,8 +134,8 @@ public class StackedBarActivity extends DemoBase implements OnSeekBarChangeListe
             float val4 = 160;
 
             List<Triplet> tripletList = new ArrayList<>();
-            tripletList.add(new Triplet("3:30 AM", "U"));
-            tripletList.add(new Triplet("3:30 AM", "Upper Body Workout"));
+            tripletList.add(new Triplet(String.format(Locale.getDefault(), "%d:30 AM", i), "U"));
+            tripletList.add(new Triplet(String.format(Locale.getDefault(), "%d:30 AM", i), "Upper Body Workout"));
 
             values.add(new BarEntry(
                     i,
