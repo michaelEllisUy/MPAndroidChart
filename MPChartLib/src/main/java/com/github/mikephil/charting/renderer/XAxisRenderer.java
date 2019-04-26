@@ -288,6 +288,7 @@ public class XAxisRenderer extends AxisRenderer {
         int labelNumber = 0;
         int labelDistance = mAxis.getLabelDistance();
         boolean drawTillEnd = false;
+        
         for (int i = 0; i < positions.length; i += 2) {
             if (lineNumber == mAxis.getLabelStart() || lineNumber == positions.length / 2 - 1) {
                 drawContainerLine(c, gridLinePath, positions[i]);
