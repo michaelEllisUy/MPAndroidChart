@@ -134,7 +134,6 @@ public class StackedBarActivity extends DemoBase implements OnSeekBarChangeListe
             float val4 = 160;
 
             List<Triplet> tripletList = new ArrayList<>();
-            tripletList.add(new Triplet(String.format(Locale.getDefault(), "%d:30 AM", i), "U"));
             tripletList.add(new Triplet(String.format(Locale.getDefault(), "%d:30 AM", i), "Upper Body Workout"));
 
             values.add(new BarEntry(

@@ -222,13 +222,17 @@ public class BarChartRenderer extends BarLineScatterCandleBubbleRenderer {
             if (mChart.areBarsRectangles()) {
                 c.drawRect(left, top, right, bottom, mRenderPaint);
             } else {
-                if (top != bottom && bottom - top  > right - left) {
+                if (top != bottom && bottom - top > right - left) {
                     c.drawRoundRect(left, top, right, bottom, BAR_RADIUS, BAR_RADIUS, mRenderPaint);
                 } else if (top != 0) {
-                    float leftOfCircle = buffer.buffer[j];
-                    float rightOfCircle = buffer.buffer[j + 2];
-                    c.drawCircle(leftOfCircle + (rightOfCircle - leftOfCircle) / 2, top,
-                            (rightOfCircle - leftOfCircle) / 2 - 2, mRenderPaint);
+                    float[] zeroPoints = {0, 0, 0, 0};
+                    trans.pointValuesToPixel(zeroPoints);
+                    if (top != zeroPoints[1]) {
+                        float leftOfCircle = buffer.buffer[j];
+                        float rightOfCircle = buffer.buffer[j + 2];
+                        c.drawCircle(leftOfCircle + (rightOfCircle - leftOfCircle) / 2, top,
+                                (rightOfCircle - leftOfCircle) / 2 - 2, mRenderPaint);
+                    }
                 }
             }
 
