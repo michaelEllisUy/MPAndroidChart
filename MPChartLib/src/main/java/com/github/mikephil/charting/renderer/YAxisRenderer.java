@@ -118,11 +118,15 @@ public class YAxisRenderer extends AxisRenderer {
             c.drawText(text, fixedPosition, positions[i * 2 + 1] + offset, mAxisLabelPaint);
         }
 
-        if (positions[from * 2 + 1] + offset < mViewPortHandler.contentBottom()) {
+        int fromPosition = from * 2 + 1;
+        if (positions.length < fromPosition
+                && positions[fromPosition] + offset < mViewPortHandler.contentBottom()) {
             drawFullLine(c, mViewPortHandler.contentBottom());
         }
 
-        if (positions[(to - 1) * 2 + 1] + offset - mAxisLabelPaint.getTextSize() > mViewPortHandler.contentTop()) {
+        int toPosition = (to - 1) * 2 + 1;
+        if (positions.length < toPosition
+                && positions[toPosition] + offset - mAxisLabelPaint.getTextSize() > mViewPortHandler.contentTop()) {
             drawFullLine(c, mViewPortHandler.contentTop());
         }
     }
